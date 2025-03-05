@@ -5,6 +5,9 @@ import Index from './pages/Index'
 import Login from './pages/Login'
 import Notfound from './pages/Notfound'
 
+// Users
+import UserList from './pages/Users/UserList/index';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -17,6 +20,14 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <Login />
+  },
+  {
+    path: '/users',
+    element: (
+      <Layout>
+        <UserList />
+      </Layout>
+    )
   },
   {
     path: '*',
