@@ -9,7 +9,7 @@ import {
   GridSortModel,
 } from '@mui/x-data-grid';
 import { useUsers } from '../../../API/Users/users.hook';
-import { Box, Typography, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress, styled, Theme } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Link } from 'react-router'; // Add this import at the top
 
@@ -18,11 +18,122 @@ const theme = createTheme({
   direction: 'rtl', // Set direction to RTL
 });
 
+
+const StyledDataGrid = styled(DataGrid)(({ theme }: { theme: Theme }) => ({
+  border: 0,
+  color: 'rgba(255,255,255,0.85)',
+  fontFamily: [
+    'Samim',
+    'Arial',
+    'sans-serif',
+  ].join(','),
+  WebkitFontSmoothing: 'auto',
+  letterSpacing: 'normal',
+  '& .MuiDataGrid-columnsContainer': {
+    backgroundColor: '#1d1d1d',
+    ...theme.applyStyles('light', {
+      backgroundColor: '#fafafa',
+    }),
+  },
+  '& .MuiDataGrid-columnHeaders': {
+    direction: 'rtl', // Ensure column headers are RTL
+    textAlign: 'right', // Align header text to the right
+  },
+  '& .MuiDataGrid-iconSeparator': {
+    display: 'none',
+  },
+  '& .MuiDataGrid-columnHeader, .MuiDataGrid-cell': {
+    borderRight: '1px solid #303030',
+    ...theme.applyStyles('light', {
+      borderRightColor: '#f0f0f0',
+    }),
+  },
+  '& .MuiDataGrid-columnHeaderTitle': {
+    fontWeight: 'bold', // Optional: Make header text bold
+  },
+  // Custom styles for the toolbar icons and text
+  '& .MuiDataGrid-toolbarContainer': {
+    direction: 'rtl', // Set RTL direction for the toolbar
+    justifyContent: 'flex-start',
+    '& .MuiButton-root': {
+      direction: 'rtl',
+    },
+    '& .MuiButton-startIcon': {
+      marginRight: '0',
+      marginLeft: '8px',
+    },
+  },
+  '& .MuiDataGrid-row:hover': {
+    backgroundColor: 'rgba(0, 0, 0, 0.04)', // Optional: add hover effect
+  },
+  '& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell': {
+    borderBottom: '1px solid #303030',
+    ...theme.applyStyles('light', {
+      borderBottomColor: '#f0f0f0',
+    }),
+  },
+  '& .MuiDataGrid-cell': {
+    color: 'rgba(255,255,255,0.65)',
+    direction: 'rtl', // Ensure cell content is RTL
+    textAlign: 'right', // Align cell text to the right
+    ...theme.applyStyles('light', {
+      color: 'rgba(0,0,0,.85)',
+    }),
+  },
+  '& .MuiPaginationItem-root': {
+    borderRadius: 0,
+  },
+  ...theme.applyStyles('light', {
+    color: 'rgba(0,0,0,.85)',
+  }),
+  // Add styles for the search input
+  '& .MuiDataGrid-toolbarQuickFilter': {
+    direction: 'rtl',
+    '& .MuiInputBase-root': {
+      direction: 'rtl',
+      backgroundColor: '#f5f5f5',
+      borderRadius: '8px',
+      padding: '4px 12px',
+    },
+    '& .MuiInputBase-input.MuiInput-input': {
+      direction: 'rtl',
+      textAlign: 'right',
+      padding: '8px 10px',
+      fontSize: '14px',
+      color: '#333',
+      '&::placeholder': {
+        color: '#666',
+        opacity: 1,
+      },
+      '&:focus': {
+        backgroundColor: '#fff',
+      },
+    },
+    '& .MuiInputBase-inputAdornedStart': {
+      paddingRight: '8px',
+    },
+    '& .MuiInputBase-inputAdornedEnd': {
+      paddingLeft: '8px',
+    },
+    '& .MuiInputBase-inputTypeSearch': {
+      // Add specific styles for search type input if needed
+    },
+    '& .MuiInputAdornment-root': {
+      marginLeft: '8px',
+      marginRight: '-8px',
+      '& .MuiSvgIcon-root': {
+        fontSize: '20px',
+        color: '#666',
+      },
+    },
+  },
+}));
+
 const UserList = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchValue, setSearchValue] = useState('');
-  
+
   const [filterModel, setFilterModel] = useState<GridFilterModel>({
     items: [],
   });
@@ -78,7 +189,7 @@ const UserList = () => {
       renderCell: (params) => (
         <Link
           to={`/users/${params.value}`}
-          style={{ 
+          style={{
             color: 'inherit',
             textDecoration: 'none',
             display: 'block',
@@ -89,13 +200,13 @@ const UserList = () => {
         </Link>
       ),
     },
-    { field: 'first_name', headerName: 'First Name', width: 150 },
-    { field: 'last_name', headerName: 'Last Name', width: 150 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'role', headerName: 'Role', width: 120 },
+    { field: 'first_name', headerName: 'نام', width: 150 },
+    { field: 'last_name', headerName: 'نام خانوادگی', width: 150 },
+    { field: 'mobile', headerName: 'شماره تلفن', width: 150 },
+    { field: 'role', headerName: 'نقش', width: 120 },
     {
       field: 'fullName',
-      headerName: 'Full Name',
+      headerName: 'نام و نام خانوادگی',
       width: 200,
       valueGetter: (value, row) => {
         console.log('cose', row)
@@ -104,7 +215,7 @@ const UserList = () => {
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: 'عملیات',
       width: 120,
       renderCell: (params) => (
         <Link
@@ -178,60 +289,38 @@ const UserList = () => {
 
       {/* DataGrid with Advanced Features */}
       <ThemeProvider theme={theme}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        rowCount={rowCount}
-        paginationMode="server"
-        paginationModel={{ page: page - 1, pageSize: limit }}
-        onPaginationModelChange={handlePaginationModelChange}
-        pageSizeOptions={[10, 20, 50]}
-        loading={isLoading}
-        filterMode="server"
-        filterModel={filterModel}
-        onFilterModelChange={handleFilterModelChange}
-        sortModel={sortModel}
-        onSortModelChange={handleSortModelChange}
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-            quickFilterProps: { 
-              value: quickFilterValue, // Controlled input value
-              onChange: handleQuickFilterChange,
-              debounceMs: 0, // Disable MUI's built-in debounce
+        <StyledDataGrid
+          rows={rows}
+          columns={columns}
+          rowCount={rowCount}
+          paginationMode="server"
+          paginationModel={{ page: page - 1, pageSize: limit }}
+          onPaginationModelChange={handlePaginationModelChange}
+          pageSizeOptions={[10, 20, 50]}
+          loading={isLoading}
+          filterMode="server"
+          filterModel={filterModel}
+          onFilterModelChange={handleFilterModelChange}
+          sortModel={sortModel}
+          onSortModelChange={handleSortModelChange}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: {
+                value: quickFilterValue, // Controlled input value
+                onChange: handleQuickFilterChange,
+                debounceMs: 0, // Disable MUI's built-in debounce
+              },
             },
-          },
-        }}
-        sx={{
-          height: 600,
-          direction: 'rtl', // Set direction for the entire DataGrid
-          '& .MuiDataGrid-columnHeaders': {
-            direction: 'rtl', // Ensure column headers are RTL
-            textAlign: 'right', // Align header text to the right
-          },
-          '& .MuiDataGrid-cell': {
-            direction: 'rtl', // Ensure cell content is RTL
-            textAlign: 'right', // Align cell text to the right
-          },
-          '& .MuiDataGrid-columnHeaderTitle': {
-            fontWeight: 'bold', // Optional: Make header text bold
-          },
-          // Custom styles for the toolbar icons and text
-          '& .MuiDataGrid-toolbarContainer': {
-            direction: 'rtl', // Set RTL direction for the toolbar
-          },
-          '& .MuiButton-startIcon': {
-            marginRight: '0 !important', // Remove default margin-right
-            marginLeft: '8px !important', // Add margin-left instead
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: 'rgba(0, 0, 0, 0.04)', // Optional: add hover effect
-          },
-        }}
-      />
+          }}
+          sx={{
+            height: 600,
+            direction: 'rtl', // Set direction for the entire DataGrid
+          }}
+        />
       </ThemeProvider>
-      
+
     </Box>
   );
 };

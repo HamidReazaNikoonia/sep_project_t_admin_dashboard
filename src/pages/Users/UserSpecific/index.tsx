@@ -1,6 +1,7 @@
 import { useParams } from 'react-router';
-import { Box, Typography, Paper, CircularProgress } from '@mui/material';
+import { Box, Typography, Paper as MuiPaper, CircularProgress } from '@mui/material';
 import { useUserById } from '../../../API/Users/users.hook';
+import StyledPaper from '../../../components/StyledPaper';
 
 const UserSpecific = () => {
   const { user_id } = useParams<{ user_id: string }>();
@@ -40,10 +41,13 @@ const UserSpecific = () => {
 
   return (
     <Box dir="rtl" p={3}>
-      <Typography variant="h4" gutterBottom>
-        جزئیات کاربر
+      <Typography className='pb-4' variant="h4" gutterBottom>
+      جزئیات کاربر    <span className='text-green-800'> {`${user.first_name} ${user.last_name}`} </span> 
       </Typography>
-      <Paper sx={{ p: 3 }}>
+      <Typography className='pb-4' variant="h6" gutterBottom>
+     
+      </Typography>
+      <StyledPaper sx={{ p: 3 }}>
         <Box display="grid" gridTemplateColumns="1fr 1fr" gap={2}>
           <Box>
             <Typography variant="subtitle2" color="textSecondary">
@@ -82,7 +86,7 @@ const UserSpecific = () => {
           
           {/* Add more user details as needed */}
         </Box>
-      </Paper>
+      </StyledPaper>
     </Box>
   );
 };
