@@ -8,6 +8,7 @@ import Notfound from './pages/Notfound'
 // Users
 import UserList from './pages/Users/UserList/index';
 import UserSpecific from './pages/Users/UserSpecific/index';
+import ProductList from './pages/Product/ProductList/index'
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <UserSpecific />
+      </Layout>
+    )
+  },
+  {
+    path: '/products',
+    element: (
+      <Layout>
+        <ProductList />
       </Layout>
     )
   },
