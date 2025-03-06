@@ -17,6 +17,7 @@ import {
   ShoppingCart,
   School,
   Settings,
+  People,
   ChevronLeft
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router'; // Import from react-router
@@ -26,7 +27,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
   const location = useLocation(); // Get current location for active route styling
 
   const menuItems = [
-    { text: 'Dashboard', icon: <Dashboard />, path: '/' },
+    { text: 'لیست کاربران', icon: <People />, path: '/users' },
     { text: 'E-Commerce', icon: <ShoppingCart />, path: '/ecommerce' },
     { text: 'E-Learning', icon: <School />, path: '/elearning' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },

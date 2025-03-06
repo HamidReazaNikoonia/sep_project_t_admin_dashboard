@@ -36,3 +36,12 @@ export const useUsers = (filters: {
     queryFn: () => usersApi.getUsers(filters),
   });
 };
+
+// Add this new hook for getting user by ID
+export const useUserById = (userId: string | number) => {
+  return useQuery({
+    queryKey: usersKeys.detail(userId.toString()),
+    queryFn: () => usersApi.getUserById(userId.toString()),
+    enabled: !!userId,
+  });
+};

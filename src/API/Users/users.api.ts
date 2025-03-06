@@ -19,7 +19,7 @@ export const usersApi = {
 
   // Get a specific user by ID
   getUserById: async (userId: string): Promise<UserResponse> => {
-    const response = await api.get(`/v1/users/${userId}`);
+    const response = await api.get(`/users/${userId}`);
     return response.data;
   },
 };

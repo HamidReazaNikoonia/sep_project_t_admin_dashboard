@@ -7,6 +7,7 @@ import Notfound from './pages/Notfound'
 
 // Users
 import UserList from './pages/Users/UserList/index';
+import UserSpecific from './pages/Users/UserSpecific/index';
 
 const router = createBrowserRouter([
   {
@@ -26,6 +27,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <UserList />
+      </Layout>
+    )
+  },
+  {
+    path: '/users/:user_id',
+    element: (
+      <Layout>
+        <UserSpecific />
       </Layout>
     )
   },

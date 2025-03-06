@@ -77,7 +77,7 @@ const UserList = () => {
       width: 200,
       renderCell: (params) => (
         <Link
-          to={`/user/${params.value}`}
+          to={`/users/${params.value}`}
           style={{ 
             color: 'inherit',
             textDecoration: 'none',
@@ -108,7 +108,7 @@ const UserList = () => {
       width: 120,
       renderCell: (params) => (
         <Link
-          to={`/user/${params.row.id}`}
+          to={`/users/${params.row.id}`}
           style={{
             color: 'primary.main',
             textDecoration: 'none'
