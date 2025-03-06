@@ -14,6 +14,8 @@ export interface Product {
     percent: number;
   };
   price: number;
+  countInStock: number;
+  status: string;
 }
 
 export interface Category {

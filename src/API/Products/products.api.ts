@@ -4,7 +4,7 @@ import { Product, Category, CreateProductDto, UpdateProductDto, CreateCategoryDt
 const productsApi = {
   // Products endpoints
   getProducts: async (params?: { page?: number; limit?: number; q?: string }) => {
-    const { data } = await axios.get<{ data: Product[]; total: number }>('admin/product', { params });
+    const { data } = await axios.get<{ data: {products: Product[], count: number}  }>('admin/product', { params });
     return data;
   },
 
