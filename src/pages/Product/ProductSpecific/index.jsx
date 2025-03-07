@@ -233,10 +233,10 @@ const ProductSpecific = () => {
             </Typography>
             <Grid container spacing={2}>
               {product.images.map((imageId, index) => (
-                <Grid item key={imageId} xs={12} sm={6} md={4} lg={3}>
+                <Grid item key={imageId} size={{ xs: 12, md: 4 }}>
                   <Box
                     component="img"
-                    src={`/api/images/${imageId}`} // Adjust the image URL according to your API
+                    src={`http://localhost:9000/file/${imageId.file_name || ''}`} // Adjust the image URL according to your API
                     alt={`Product image ${index + 1}`}
                     sx={{
                       width: '100%',

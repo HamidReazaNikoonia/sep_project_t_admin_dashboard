@@ -227,7 +227,7 @@ const ProductList = () => {
         {
             field: 'status',
             headerName: 'وضعیت',
-            width: 60,
+            width: 100,
             renderCell: (params) => (
                 <div style={{ color: params.value === 'publish' ? 'green' : 'red', fontWeight: 'bold'}}>
                       {params.value === 'publish' ? 'فعال ' : 'غیر فعال'}
