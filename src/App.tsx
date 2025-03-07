@@ -1,5 +1,6 @@
 import React from 'react'
 import { RouterProvider } from 'react-router'
+import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 
@@ -33,6 +34,7 @@ const App: React.FC = () => (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <Toaster />
       </QueryClientProvider>
     </ThemeProvider>
   </ErrorBoundary>
