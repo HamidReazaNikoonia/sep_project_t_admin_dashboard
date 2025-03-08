@@ -1,3 +1,4 @@
+import { Edit as EditIcon } from '@mui/icons-material' // Add this import
 import {
   Box,
   Typography,
@@ -6,10 +7,8 @@ import {
   Switch,
   Button,
 } from '@mui/material'
-import { Edit as EditIcon } from '@mui/icons-material' // Add this import
-
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useParams, Link } from 'react-router'
 
 import {
   useProduct,
@@ -100,9 +99,11 @@ const ProductSpecific = () => {
         <Typography className="text-right" variant="h4" gutterBottom>
           جزئیات محصول
         </Typography>
-        <Button endIcon={<EditIcon />} variant="contained" color="warning">
-          ویرایش محصول&nbsp;&nbsp;
-        </Button>
+        <Link to={`/products/${product_id}/edit`}>
+          <Button endIcon={<EditIcon />} variant="contained" color="warning">
+            ویرایش محصول&nbsp;&nbsp;
+          </Button>
+        </Link>
       </div>
 
       <Grid container spacing={3}>

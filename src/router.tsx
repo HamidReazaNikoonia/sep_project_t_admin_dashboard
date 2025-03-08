@@ -11,6 +11,7 @@ import UserSpecific from './pages/Users/UserSpecific/index';
 import ProductList from './pages/Product/ProductList/index'
 import ProductSpecific from './pages/Product/ProductSpecific'
 import NewProduct from './pages/Product/NewProduct'
+import EditProduct from './pages/Product/EditProduct'
 
 const router = createBrowserRouter([
   {
@@ -62,6 +63,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <NewProduct />
+      </Layout>
+    )
+  },
+  {
+    path: '/products/:product_id/edit',
+    element: (
+      <Layout>
+        <EditProduct />
       </Layout>
     )
   },
