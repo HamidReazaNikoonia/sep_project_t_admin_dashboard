@@ -10,6 +10,7 @@ import UserList from './pages/Users/UserList/index';
 import UserSpecific from './pages/Users/UserSpecific/index';
 import ProductList from './pages/Product/ProductList/index'
 import ProductSpecific from './pages/Product/ProductSpecific'
+import NewProduct from './pages/Product/NewProduct'
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <ProductSpecific />
+      </Layout>
+    )
+  },
+  {
+    path: '/products/new',
+    element: (
+      <Layout>
+        <NewProduct />
       </Layout>
     )
   },

@@ -288,7 +288,7 @@ const ProductList = () => {
         <Box sx={{ width: '100%', p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                 <Link
-                    to="/products/create"
+                    to="/products/new"
                     style={{
                         textDecoration: 'none',
                         color: 'inherit',

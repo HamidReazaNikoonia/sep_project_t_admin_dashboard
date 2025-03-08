@@ -28,7 +28,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
 
   const menuItems = [
     { text: 'لیست کاربران', icon: <People />, path: '/users' },
-    { text: 'E-Commerce', icon: <ShoppingCart />, path: '/ecommerce' },
+    { text: 'لیست محصولات', icon: <ShoppingCart />, path: '/products' },
     { text: 'E-Learning', icon: <School />, path: '/elearning' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
   ];

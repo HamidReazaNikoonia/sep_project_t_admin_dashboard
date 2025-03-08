@@ -4,7 +4,10 @@ import {
   Grid2 as Grid,
   CircularProgress,
   Switch,
+  Button,
 } from '@mui/material'
+import { Edit as EditIcon } from '@mui/icons-material' // Add this import
+
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 
@@ -93,9 +96,14 @@ const ProductSpecific = () => {
 
   return (
     <Box dir="rtl" p={3}>
-      <Typography className="text-right pb-4" variant="h4" gutterBottom>
-        جزئیات محصول
-      </Typography>
+      <div className="flex justify-between items-center mb-4">
+        <Typography className="text-right" variant="h4" gutterBottom>
+          جزئیات محصول
+        </Typography>
+        <Button endIcon={<EditIcon />} variant="contained" color="warning">
+          ویرایش محصول&nbsp;&nbsp;
+        </Button>
+      </div>
 
       <Grid container spacing={3}>
         {/* Basic Information */}
@@ -214,7 +222,7 @@ const ProductSpecific = () => {
         </Grid>
 
         {/* Description */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <StyledPaper minHeight="256px" sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               توضیحات
@@ -226,7 +234,7 @@ const ProductSpecific = () => {
         </Grid>
 
         {/* Images */}
-        <Grid item xs={12}>
+        <Grid size={12}>
           <StyledPaper sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom>
               تصاویر
@@ -240,8 +248,9 @@ const ProductSpecific = () => {
                     alt={`Product image ${index + 1}`}
                     sx={{
                       width: '100%',
-                      height: 'auto',
+                      height: 200, // Fixed height for consistent grid
                       borderRadius: 1,
+                      objectFit: 'cover', // This ensures images cover the area nicely
                     }}
                   />
                 </Grid>
