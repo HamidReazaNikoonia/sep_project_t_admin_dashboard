@@ -120,9 +120,10 @@ const EditProduct = () => {
   const onSubmit = async (data: FormData) => {
     try {
         const imageArr = [];
-      let imageIds = productData?.data?.products[0].images || [];
+        let imageIds = [];
+        let getImageFromProduct = productData?.data?.products[0].images || [];
 
-      for (const image of imageIds) {
+      for (const image of getImageFromProduct) {
         imageArr.push(image._id);
       }
       
@@ -130,12 +131,15 @@ const EditProduct = () => {
       if (images.length > 0) {
         const newImageIds = await Promise.all(images.map(uploadImage));
         imageIds = [...imageArr, ...newImageIds];
+      } else {
+        imageIds = [...imageArr];
       }
-      
+
+      // @ts-ignore
       await updateProduct.mutateAsync({
         ...data,
-        images: imageIds,
-        thumbnail: imageIds[0],
+        ...(imageIds.length > 0 && { images: imageIds }),
+        ...(imageIds.length > 0 && { thumbnail: imageIds[0] }),
       });
 
       showToast('موفق', 'محصول با موفقیت ویرایش شد', 'success');
