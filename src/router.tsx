@@ -13,6 +13,7 @@ import ProductSpecific from './pages/Product/ProductSpecific'
 import NewProduct from './pages/Product/NewProduct'
 import EditProduct from './pages/Product/EditProduct'
 import CourseList from './pages/Course/CourseList'
+import CourseSpecific from './pages/Course/CourseSpecific'
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CourseList />
+      </Layout>
+    )
+  },
+  {
+    path: '/courses/:course_id',
+    element: (
+      <Layout>
+        <CourseSpecific />
       </Layout>
     )
   },
