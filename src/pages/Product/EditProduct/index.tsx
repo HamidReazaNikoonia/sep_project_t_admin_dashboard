@@ -11,6 +11,8 @@ import {
   FormControlLabel,
   CircularProgress,
 } from '@mui/material';
+import { Delete as DeleteIcon } from '@mui/icons-material'; // Add this import
+import { IconButton } from '@mui/material'; // Add this import
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -52,11 +54,19 @@ const EditProduct = () => {
   const { product_id } = useParams();
   const navigate = useNavigate();
   const [images, setImages] = useState<File[]>([]);
+  const [currentImages, setCurrentImages] = useState<Array<{ _id: string, file_name: string }>>([]);
   
   // Fetch product data
   const { data: productData, isLoading: isLoadingProduct } = useProduct(product_id!);
   const { data: categories = [] } = useCategories();
   const updateProduct = useUpdateProduct(product_id!);
+
+   // Update currentImages when product data loads
+   useEffect(() => {
+    if (productData?.data?.products[0]?.images) {
+      setCurrentImages(productData.data.products[0].images);
+    }
+  }, [productData]);
 
   const { control, handleSubmit, watch, reset, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(schema),
@@ -117,31 +127,27 @@ const EditProduct = () => {
     }
   };
 
+  const handleDeleteImage = (imageId: string) => {
+    setCurrentImages(prev => prev.filter(img => img._id !== imageId));
+  };
+
   const onSubmit = async (data: FormData) => {
     try {
-        const imageArr = [];
-        let imageIds = [];
-        let getImageFromProduct = productData?.data?.products[0].images || [];
-
-      for (const image of getImageFromProduct) {
-        imageArr.push(image._id);
-      }
+      const imageArr = currentImages.map(img => img._id);
+      let imageIds = [...imageArr];
       
       // Upload new images if any
       if (images.length > 0) {
         const newImageIds = await Promise.all(images.map(uploadImage));
-        imageIds = [...imageArr, ...newImageIds];
-      } else {
-        imageIds = [...imageArr];
+        imageIds = [...imageIds, ...newImageIds.filter(Boolean)];
       }
-
-      // @ts-ignore
+      // @ts-expect-error
       await updateProduct.mutateAsync({
         ...data,
         ...(imageIds.length > 0 && { images: imageIds }),
         ...(imageIds.length > 0 && { thumbnail: imageIds[0] }),
       });
-
+  
       showToast('موفق', 'محصول با موفقیت ویرایش شد', 'success');
       navigate('/products');
     } catch (error) {
@@ -348,6 +354,62 @@ const EditProduct = () => {
               </Grid>
             </StyledPaper>
           </Grid>
+
+          {/* Current Images Section */}
+    <Grid size={12}>
+      <StyledPaper sx={{ p: 3 }}>
+        <Typography variant="h6" gutterBottom>تصاویر فعلی</Typography>
+        {currentImages.length > 0 ? (
+          <Grid container spacing={2}>
+            {currentImages.map((image, index) => (
+              <Grid key={image._id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <Box
+                  sx={{
+                    position: 'relative',
+                    '&:hover .delete-button': {
+                      opacity: 1,
+                    },
+                  }}
+                >
+                  <Box
+                    component="img"
+                    src={`http://localhost:9000/file/${image.file_name}`}
+                    alt={`Product image ${index + 1}`}
+                    sx={{
+                      width: '100%',
+                      height: 200,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                    }}
+                  />
+                  <IconButton
+                    className="delete-button"
+                    onClick={() => handleDeleteImage(image._id)}
+                    sx={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      bgcolor: 'rgba(255, 255, 255, 0.8)',
+                      opacity: 0,
+                      transition: 'opacity 0.2s',
+                      '&:hover': {
+                        bgcolor: 'rgba(255, 255, 255, 0.9)',
+                      },
+                    }}
+                  >
+                    <DeleteIcon color="error" />
+                  </IconButton>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Typography color="text.secondary">
+            هیچ تصویری برای این محصول وجود ندارد
+          </Typography>
+        )}
+      </StyledPaper>
+    </Grid>
 
           {/* Images */}
           <Grid size={12}>
