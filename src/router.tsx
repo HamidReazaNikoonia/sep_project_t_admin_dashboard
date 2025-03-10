@@ -14,6 +14,7 @@ import NewProduct from './pages/Product/NewProduct'
 import EditProduct from './pages/Product/EditProduct'
 import CourseList from './pages/Course/CourseList'
 import CourseSpecific from './pages/Course/CourseSpecific'
+import NewCourse from './pages/Course/NewCourse'
 
 const router = createBrowserRouter([
   {
@@ -89,6 +90,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CourseSpecific />
+      </Layout>
+    )
+  },
+  {
+    path: '/courses/new',
+    element: (
+      <Layout>
+        <NewCourse />
       </Layout>
     )
   },
