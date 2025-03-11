@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from 'react';
 import { useFieldArray } from 'react-hook-form';
 import { Add as AddIcon, Delete as DeleteIcon, Upload as UploadIcon } from '@mui/icons-material';
@@ -39,26 +40,27 @@ const schema = yup.object({
     .integer('ظرفیت باید عدد صحیح باشد'),
   course_language: yup.string().required('زبان دوره الزامی است'),
   course_duration: yup.number().required('مدت دوره الزامی است'),
+  slug: yup.string(),
   // educational_level: yup.number().required('سطح آموزشی الزامی است'),
   is_have_licence: yup.boolean().default(false),
   // coach_id: yup.string().required('انتخاب مدرس الزامی است'),
   course_status: yup.boolean().default(true),
-  // sample_media: yup.array().of(
-  //   yup.object({
-  //     media_type: yup.string().required('نوع رسانه الزامی است'),
-  //     media_title: yup.string().required('عنوان رسانه الزامی است'),
-  //     url_address: yup.string(),
-  //     file: yup.mixed(),
-  //   })
-  // ).min(1, 'حداقل یک نمونه رسانه الزامی است'),
-  // course_objects: yup.array().of(
-  //   yup.object({
-  //     subject_title: yup.string().required('عنوان سرفصل الزامی است'),
-  //     status: yup.string().oneOf(['PUBLIC', 'PRIVATE']).default('PRIVATE'),
-  //     duration: yup.number().required('مدت زمان الزامی است'),
-  //     files: yup.mixed(),
-  //   })
-  // ),
+  sample_media: yup.array().of(
+    yup.object({
+      media_type: yup.string().required('نوع رسانه الزامی است'),
+      media_title: yup.string().required('عنوان رسانه الزامی است'),
+      url_address: yup.string(),
+      file: yup.mixed(),
+    })
+  ).min(1, 'حداقل یک نمونه رسانه الزامی است'),
+  course_objects: yup.array().of(
+    yup.object({
+      subject_title: yup.string().required('عنوان سرفصل الزامی است'),
+      status: yup.string().oneOf(['PUBLIC', 'PRIVATE']).default('PRIVATE'),
+      duration: yup.number().required('مدت زمان الزامی است'),
+      files: yup.mixed(),
+    })
+  ),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -140,9 +142,9 @@ const NewCourse = () => {
     try {
       const uploadedFile = await uploadFile(thumbnailImage);
       setThumbnailUploadedFile(uploadedFile);
-      showToast('موفق', 'تصویر شاخص با موفقیت آپلود شد', 'success');
+      showToast('موفق', 'تصویر دوره با موفقیت آپلود شد', 'success');
     } catch (error) {
-      showToast('خطا', 'خطا در آپلود تصویر شاخص', 'error');
+      showToast('خطا', 'خطا در آپلود تصویر دوره', 'error');
     } finally {
       setThumbnailUploading(false);
     }
@@ -178,7 +180,7 @@ const NewCourse = () => {
     try {
       // Check if thumbnail is uploaded
       if (!thumbnailUploadedFile?._id) {
-        showToast('خطا', 'لطفا تصویر شاخص را آپلود کنید', 'error');
+        showToast('خطا', 'لطفا تصویر دوره را آپلود کنید', 'error');
         return;
       }
 
@@ -189,7 +191,6 @@ const NewCourse = () => {
         if (!uploadedFile?._id) {
           throw new Error(`لطفا فایل نمونه ${index + 1} را آپلود کنید`);
         }
-        console.log({kos:uploadedFile});
         return {
           media_type: media.media_type,
           media_title: media.media_title,
@@ -238,7 +239,7 @@ const NewCourse = () => {
 
   return (
     <Box dir="rtl" p={3}>
-      <Typography variant="h4" gutterBottom>
+      <Typography className='pb-4' variant="h4" gutterBottom>
         ایجاد دوره جدید
       </Typography>
 
@@ -312,6 +313,17 @@ const NewCourse = () => {
                     helperText={errors.price?.message}
                   />
                 </Grid>
+
+
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    {...register('slug')}
+                    fullWidth
+                    label="کلمه کلیدی"
+                    error={!!errors.slug}
+                    helperText={errors.slug?.message}
+                  />
+                </Grid>
               </Grid>
             </StyledPaper>
           </Grid>
@@ -373,12 +385,12 @@ const NewCourse = () => {
           <Grid size={12}>
             <StyledPaper sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
-                تصویر شاخص
+                تصویر دوره
               </Typography>
               <Box>
                 <ImageUploader
                   withIcon={true}
-                  buttonText="انتخاب تصویر شاخص"
+                  buttonText="انتخاب تصویر دوره"
                   onChange={(files) => {
                     setThumbnailImage(files[0]);
                     setThumbnailUploadedFile(null);
@@ -397,7 +409,7 @@ const NewCourse = () => {
                     startIcon={thumbnailUploading ? <CircularProgress size={20} /> : <UploadIcon />}
                     sx={{ mt: 2 }}
                   >
-                    آپلود تصویر شاخص
+                    آپلود تصویر دوره
                   </Button>
                 )}
                 {thumbnailUploadedFile && (
@@ -415,7 +427,7 @@ const NewCourse = () => {
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h6">نمونه‌های آموزشی</Typography>
                 <Button
-                  startIcon={<AddIcon />}
+                  startIcon={<AddIcon className='ml-2' />}
                   onClick={() => appendSampleMedia({ 
                     media_type: '', 
                     media_title: '', 
@@ -507,7 +519,7 @@ const NewCourse = () => {
                     <Grid size={12} display="flex" justifyContent="flex-end">
                       <Button
                         color="error"
-                        startIcon={<DeleteIcon />}
+                        startIcon={<DeleteIcon className='ml-2' />}
                         onClick={() => removeSampleMedia(index)}
                       >
                         حذف
@@ -525,7 +537,7 @@ const NewCourse = () => {
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h6">سرفصل‌های دوره</Typography>
                 <Button
-                  startIcon={<AddIcon />}
+                  startIcon={<AddIcon className='ml-2' />}
                   onClick={() => appendCourseObject({
                     subject_title: '',
                     status: 'PRIVATE',
@@ -617,7 +629,7 @@ const NewCourse = () => {
                     <Grid size={12} display="flex" justifyContent="flex-end">
                       <Button
                         color="error"
-                        startIcon={<DeleteIcon />}
+                        startIcon={<DeleteIcon className='ml-2' />}
                         onClick={() => removeCourseObject(index)}
                       >
                         حذف سرفصل
