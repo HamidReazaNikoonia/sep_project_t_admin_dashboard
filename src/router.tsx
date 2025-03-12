@@ -15,6 +15,7 @@ import EditProduct from './pages/Product/EditProduct'
 import CourseList from './pages/Course/CourseList'
 import CourseSpecific from './pages/Course/CourseSpecific'
 import NewCourse from './pages/Course/NewCourse'
+import EditCourse from './pages/Course/EditCourse'
 
 const router = createBrowserRouter([
   {
@@ -98,6 +99,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <NewCourse />
+      </Layout>
+    )
+  },
+  {
+    path: '/courses/:course_id/edit',
+    element: (
+      <Layout>
+        <EditCourse />
       </Layout>
     )
   },
