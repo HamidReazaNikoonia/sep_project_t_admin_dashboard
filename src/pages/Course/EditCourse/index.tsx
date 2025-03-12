@@ -12,7 +12,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import { useForm, useFieldArray } from 'react-hook-form';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Upload as UploadIcon } from '@mui/icons-material';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useUpdateCourse, useCourse, useCourseCategories } from '../../../API/Course/course.hook';
@@ -63,7 +63,35 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
+interface FileObject {
+  _id: string;
+  field_name: string;
+  file_name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+
+interface SampleMedia {
+  _id: string;
+  media_title: string;
+  media_type: string;
+  url_address: string;
+  file: FileObject;
+}
+
+interface CourseObject {
+  _id: string;
+  subject_title: string;
+  status: 'PUBLIC' | 'PRIVATE';
+  duration: number;
+  files: FileObject;
+}
+
 const EditCourse = () => {
+
+  const [fileUploads, setFileUploads] = useState<FileUploadState>({});
+
+
   const navigate = useNavigate();
   const { course_id } = useParams();
   const { data: courseData, isLoading: isLoadingCourse } = useCourse(course_id!);
@@ -126,12 +154,96 @@ const EditCourse = () => {
 
   const onSubmit = async (data: FormData) => {
     try {
-      await updateCourse.mutateAsync(data);
+      // Transform sample_media data
+      const transformedSampleMedia = data.sample_media.map((media, index) => {
+        const uploadKey = `sample_media_${index}`;
+        const newUploadedFile = fileUploads[uploadKey]?.uploadedFile;
+
+        console.log('newUploadedFile', {newUploadedFile, t:media.media_title});
+        console.log('media', {media, fileUploads});
+  
+        return {
+          media_type: media.media_type,
+          media_title: media.media_title,
+          // url_address: media.url_address,
+          // If there's a new file uploaded, use its ID, otherwise use existing file ID
+          file: newUploadedFile?._id || (media.file?._id || media.file),
+        };
+      });
+  
+      // Transform course_objects data
+      const transformedCourseObjects = data.course_objects.map((object, index) => {
+        const uploadKey = `course_object_${index}`;
+        const newUploadedFile = fileUploads[uploadKey]?.uploadedFile;
+  
+        return {
+          subject_title: object.subject_title,
+          status: object.status,
+          duration: object.duration,
+          // If there's a new file uploaded, use its ID, otherwise use existing file ID
+          files: newUploadedFile?._id || (object.files?._id || object.files),
+        };
+      });
+  
+      // Prepare the final payload
+      const payload = {
+        title: data.title,
+        sub_title: data.sub_title,
+        price: data.price,
+        course_type: data.course_type,
+        course_category: data.course_category,
+        max_member_accept: data.max_member_accept,
+        course_language: data.course_language,
+        course_duration: data.course_duration,
+        is_have_licence: data.is_have_licence,
+        course_status: data.course_status,
+        slug: data.slug,
+        sample_media: transformedSampleMedia,
+        course_objects: transformedCourseObjects,
+      };
+  
+      await updateCourse.mutateAsync(payload);
       showToast('موفق', 'دوره با موفقیت بروزرسانی شد', 'success');
       navigate('/courses');
     } catch (error) {
       showToast('خطا', 'خطا در بروزرسانی دوره', 'error');
       console.error('Error updating course:', error);
+    }
+  };
+   // File upload handler
+   const handleFileUpload = async (key: string) => {
+    const fileState = fileUploads[key];
+    if (!fileState?.file) return;
+
+    setFileUploads(prev => ({
+      ...prev,
+      [key]: { ...prev[key], uploading: true, error: null }
+    }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', fileState.file);
+      
+      const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error('Upload failed');
+      
+      const data = await response.json();
+      setFileUploads(prev => ({
+        ...prev,
+        [key]: { ...prev[key], uploading: false, uploadedFile: data.uploadedFile }
+      }));
+      
+      showToast('موفق', 'فایل با موفقیت آپلود شد', 'success');
+    } catch (error) {
+      setFileUploads(prev => ({
+        ...prev,
+        [key]: { ...prev[key], uploading: false, error: 'خطا در آپلود فایل' }
+      }));
+      showToast('خطا', 'خطا در آپلود فایل', 'error');
     }
   };
 
@@ -278,6 +390,124 @@ const EditCourse = () => {
               </Grid>
             </StyledPaper>
           </Grid>
+
+
+           {/* Sample Media Section */}
+    <Grid size={12}>
+      <StyledPaper sx={{ p: 3 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h6">نمونه‌های آموزشی</Typography>
+          <Button
+            startIcon={<AddIcon className='ml-2' />}
+            onClick={() => appendSampleMedia({ 
+              media_type: '', 
+              media_title: '', 
+              url_address: '' 
+            })}
+          >
+            افزودن نمونه
+          </Button>
+        </Box>
+
+        {sampleMediaFields.map((field, index) => (
+          <Box key={field.id} sx={{ mb: 3, p: 2, border: '1px solid #eee', borderRadius: 1 }}>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <TextField
+                  {...register(`sample_media.${index}.media_title`)}
+                  fullWidth
+                  label="عنوان"
+                  error={!!errors.sample_media?.[index]?.media_title}
+                  helperText={errors.sample_media?.[index]?.media_title?.message}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 4 }}>
+                <TextField
+                  {...register(`sample_media.${index}.media_type`)}
+                  select
+                  fullWidth
+                  label="نوع رسانه"
+                  error={!!errors.sample_media?.[index]?.media_type}
+                  helperText={errors.sample_media?.[index]?.media_type?.message}
+                  defaultValue={courseData?.sample_media?.[index]?.media_type}
+                >
+                  <MenuItem value="video">ویدیو</MenuItem>
+                  <MenuItem value="AUDIO">صوت</MenuItem>
+                  <MenuItem value="PDF">PDF</MenuItem>
+                </TextField>
+              </Grid>
+
+              <Grid size={12}>
+                {/* Show existing file if available */}
+                {field.file && (
+                  <Box mb={2}>
+                    <Typography className='pt-2 pb-4' variant="body2" color="green">
+                      فایل فعلی: {field.file.file_name}
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      href={`http://localhost:9000/file/${field.file.file_name}`}
+                      target="_blank"
+                    >
+                      مشاهده فایل
+                    </Button>
+                  </Box>
+                )}
+
+                {/* File upload section */}
+                <input
+                  type="file"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      register(`sample_media.${index}.file`).onChange(file);
+                      setFileUploads(prev => ({
+                        ...prev,
+                        [`sample_media_${index}`]: { file, uploading: false, error: null, uploadedFile: null }
+                      }));
+                    }
+                  }}
+                  name={`sample_media.${index}.file`}
+                  style={{ display: 'none' }}
+                  id={`sample-media-file-${index}`}
+                />
+                <Box display="flex" alignItems="center" gap={2}>
+                  <label htmlFor={`sample-media-file-${index}`}>
+                    <Button variant="outlined" component="span">
+                      {field.file ? 'تغییر فایل' : 'انتخاب فایل'}
+                    </Button>
+                  </label>
+                  {fileUploads[`sample_media_${index}`]?.file && (
+                    <Button
+                      variant="contained"
+                      onClick={() => handleFileUpload(`sample_media_${index}`)}
+                      disabled={fileUploads[`sample_media_${index}`]?.uploading}
+                      startIcon={fileUploads[`sample_media_${index}`]?.uploading ? 
+                        <CircularProgress size={20} /> : 
+                        <UploadIcon />}
+                    >
+                      آپلود فایل جدید
+                    </Button>
+                  )}
+                </Box>
+              </Grid>
+
+              <Grid size={12} display="flex" justifyContent="flex-end">
+                <Button
+                  color="error"
+                  startIcon={<DeleteIcon className='ml-2' />}
+                  onClick={() => removeSampleMedia(index)}
+                >
+                  حذف
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        ))}
+      </StyledPaper>
+    </Grid>
 
           {/* Submit Button */}
           <Grid size={12}>
