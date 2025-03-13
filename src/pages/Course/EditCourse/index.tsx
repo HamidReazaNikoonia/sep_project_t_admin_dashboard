@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   Switch,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Add as AddIcon, Delete as DeleteIcon, Upload as UploadIcon } from '@mui/icons-material';
@@ -508,6 +509,144 @@ const EditCourse = () => {
         ))}
       </StyledPaper>
     </Grid>
+
+
+
+{/* Course Objects Section */}
+<Grid size={12}>
+  <StyledPaper sx={{ p: 3 }}>
+    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Typography variant="h6">سرفصل‌های دوره</Typography>
+      <Button
+        startIcon={<AddIcon className='ml-2' />}
+        onClick={() => appendCourseObject({ 
+          subject_title: '', 
+          status: 'PRIVATE', 
+          duration: 0,
+        })}
+      >
+        افزودن سرفصل
+      </Button>
+    </Box>
+
+    {courseObjectFields.map((field, index) => (
+      <Box key={field.id} sx={{ mb: 3, p: 2, border: '1px solid #eee', borderRadius: 1 }}>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TextField
+              {...register(`course_objects.${index}.subject_title`)}
+              fullWidth
+              label="عنوان سرفصل"
+              error={!!errors.course_objects?.[index]?.subject_title}
+              helperText={errors.course_objects?.[index]?.subject_title?.message}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              {...register(`course_objects.${index}.duration`)}
+              fullWidth
+              type="number"
+              label="مدت زمان (دقیقه)"
+              error={!!errors.course_objects?.[index]?.duration}
+              helperText={errors.course_objects?.[index]?.duration?.message}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 3 }}>
+            <TextField
+              {...register(`course_objects.${index}.status`)}
+              select
+              fullWidth
+              label="وضعیت"
+              error={!!errors.course_objects?.[index]?.status}
+              helperText={errors.course_objects?.[index]?.status?.message}
+              defaultValue={courseData?.course_objects?.[index]?.status}
+            >
+              <MenuItem value="PUBLIC">عمومی</MenuItem>
+              <MenuItem value="PRIVATE">خصوصی</MenuItem>
+            </TextField>
+          </Grid>
+
+          <Grid size={12}>
+            {/* Show existing file if available */}
+            {field.files && (
+              <Box mb={2}>
+                <Typography className='pt-2 pb-4' variant="body2" color="green">
+                  فایل فعلی: {field.files.file_name}
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  href={`http://localhost:9000/file/${field.files.file_name}`}
+                  target="_blank"
+                >
+                  مشاهده فایل
+                </Button>
+              </Box>
+            )}
+
+            {/* File upload section */}
+            <input
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  register(`course_objects.${index}.files`).onChange(file);
+                  setFileUploads(prev => ({
+                    ...prev,
+                    [`course_object_${index}`]: { 
+                      file, 
+                      uploading: false, 
+                      error: null, 
+                      uploadedFile: null 
+                    }
+                  }));
+                }
+              }}
+              style={{ display: 'none' }}
+              id={`course-object-file-${index}`}
+            />
+            <Box display="flex" alignItems="center" gap={2}>
+              <label htmlFor={`course-object-file-${index}`}>
+                <Button variant="outlined" component="span">
+                  {field.files ? 'تغییر فایل' : 'انتخاب فایل'}
+                </Button>
+              </label>
+              {fileUploads[`course_object_${index}`]?.file && !fileUploads[`course_object_${index}`]?.uploadedFile && (
+                <Button
+                  variant="contained"
+                  onClick={() => handleFileUpload(`course_object_${index}`)}
+                  disabled={fileUploads[`course_object_${index}`]?.uploading}
+                  startIcon={fileUploads[`course_object_${index}`]?.uploading ? 
+                    <CircularProgress size={20} /> : 
+                    <UploadIcon />}
+                >
+                  آپلود فایل جدید
+                </Button>
+              )}
+              {fileUploads[`course_object_${index}`]?.uploadedFile && (
+                <Alert severity="success">
+                  فایل با موفقیت آپلود شد
+                </Alert>
+              )}
+            </Box>
+          </Grid>
+
+          <Grid size={12} display="flex" justifyContent="flex-end">
+            <Button
+              color="error"
+              startIcon={<DeleteIcon className='ml-2' />}
+              onClick={() => removeCourseObject(index)}
+            >
+              حذف سرفصل
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
+    ))}
+  </StyledPaper>
+</Grid>
 
           {/* Submit Button */}
           <Grid size={12}>
