@@ -18,6 +18,11 @@ import NewCourse from './pages/Course/NewCourse'
 import EditCourse from './pages/Course/EditCourse'
 import OrderList from './pages/Orders/OrderLists'
 
+// coach section
+import CoachPage from './pages/Coach'
+import CoachCourseProgramPage from './pages/Coach/CoachCourseProgram';
+import CreateCoachCoursePage from './pages/Coach/CoachCourseProgram/Create'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -116,6 +121,30 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <OrderList />
+      </Layout>
+    )
+  },
+  {
+    path: '/coach',
+    element: (
+      <Layout>
+        <CoachPage />
+      </Layout>
+    )
+  },
+  {
+    path: '/coach/coach-course-program',
+    element: (
+      <Layout>
+        <CoachCourseProgramPage />
+      </Layout>
+    )
+  },
+  {
+    path: '/coach/coach-course-program/create',
+    element: (
+      <Layout>
+        <CreateCoachCoursePage />
       </Layout>
     )
   },
