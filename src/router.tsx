@@ -16,6 +16,7 @@ import CourseList from './pages/Course/CourseList'
 import CourseSpecific from './pages/Course/CourseSpecific'
 import NewCourse from './pages/Course/NewCourse'
 import EditCourse from './pages/Course/EditCourse'
+import OrderList from './pages/Orders/OrderLists'
 
 const router = createBrowserRouter([
   {
@@ -107,6 +108,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <EditCourse />
+      </Layout>
+    )
+  },
+  {
+    path: '/orders',
+    element: (
+      <Layout>
+        <OrderList />
       </Layout>
     )
   },

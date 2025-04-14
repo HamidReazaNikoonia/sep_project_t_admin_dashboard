@@ -29,7 +29,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
   const menuItems = [
     { text: 'لیست کاربران', icon: <People />, path: '/users' },
     { text: 'لیست محصولات', icon: <ShoppingCart />, path: '/products' },
-    { text: 'E-Learning', icon: <School />, path: '/elearning' },
+    { text: 'لیست دوره ها', icon: <School />, path: '/courses' },
     { text: 'Settings', icon: <Settings />, path: '/settings' },
   ];
 
@@ -58,21 +58,20 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
           <ChevronLeft />
         </IconButton>
       </div>
-      
+
       <List>
         {menuItems.map((item) => (
-          <ListItem 
-            key={item.text} 
-            disablePadding 
+          <ListItem
+            key={item.text}
+            disablePadding
             sx={{ display: 'block' }}
           >
-            <Link 
-              to={item.path} 
-              className={`block no-underline ${
-                location.pathname === item.path 
-                  ? 'text-primary-600 bg-gray-100' 
+            <Link
+              to={item.path}
+              className={`block no-underline ${location.pathname === item.path
+                  ? 'text-primary-600 bg-gray-100'
                   : 'text-gray-700'
-              }`}
+                }`}
             >
               <ListItemButton
                 sx={{

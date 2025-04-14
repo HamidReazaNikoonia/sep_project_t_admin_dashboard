@@ -15,16 +15,12 @@ const Index: React.FC<Props> = memo(() => {
   return (
     <>
       <Box>
-        <h1 className={styles.h1}>I'm REACT_APP_TEXT from .env</h1>
-        <img src={logo} alt="react-logo" className="react-logo" />
-        <Button variant="contained">Hello world</Button>
+        
       </Box>
-      <Box>
-        <Counter />
-      </Box>
+      
       <Box>
         <Suspense fallback={<Spinner size="xl" />}>
-          <DocList />
+          {/* <DocList /> */}
         </Suspense>
       </Box>
     </>
