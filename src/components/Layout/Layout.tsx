@@ -14,7 +14,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', backgroundColor: '#f3f3f3', minHeight: '100vh' }}>
       <CssBaseline />
       <Header position="fixed" sx={{ zIndex: 99999 }}>
         

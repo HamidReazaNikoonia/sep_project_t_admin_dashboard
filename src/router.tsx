@@ -22,6 +22,7 @@ import OrderList from './pages/Orders/OrderLists'
 import CoachPage from './pages/Coach'
 import CoachCourseProgramPage from './pages/Coach/CoachCourseProgram';
 import CreateCoachCoursePage from './pages/Coach/CoachCourseProgram/Create'
+import SpecificCoachCoursePage from './pages/Coach/CoachCourseProgram/Specific';
 
 const router = createBrowserRouter([
   {
@@ -145,6 +146,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CreateCoachCoursePage />
+      </Layout>
+    )
+  },
+  {
+    path: '/coach/coach-course-program/get/:id',
+    element: (
+      <Layout>
+        <SpecificCoachCoursePage />
       </Layout>
     )
   },

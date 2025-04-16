@@ -40,7 +40,7 @@ interface Props { }
     };
 
     const handleRowClick = (id: string) => {
-      navigate(`/coach/coach-course-program/${id}`);
+      navigate(`/coach/coach-course-program/get/${id}`);
     };
   
 

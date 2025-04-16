@@ -6,6 +6,7 @@ export const useCoachCoursePrograms = (params?: {
   page?: number;
   limit?: number;
   accessLevel?: string;
+  _id?: string
 }) => {
   return useQuery({
     queryKey: ['coach-course-programs', params],
