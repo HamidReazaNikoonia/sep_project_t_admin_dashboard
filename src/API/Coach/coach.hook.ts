@@ -13,6 +13,23 @@ export const useCoachCoursePrograms = (params?: {
   });
 };
 
+
+export const useCreateCoachCourseProgram = () => {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: (data: { courseId: string; programId: string }) =>
+        coachAPI.createCoachCourseProgram(data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['coach-course-programs'] });
+        showToast('موفق', 'برنامه با موفقیت ایجاد شد', 'success');
+      },
+      onError: () => {
+        showToast('خطا', 'خطا در ایجاد برنامه', 'error');
+      },
+    });
+  };
+
 export const useUpdateCoachCourseProgram = () => {
   const queryClient = useQueryClient();
 
@@ -28,3 +45,4 @@ export const useUpdateCoachCourseProgram = () => {
     },
   });
 };
+

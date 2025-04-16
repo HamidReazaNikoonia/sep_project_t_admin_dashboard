@@ -11,6 +11,12 @@ export const coachAPI = {
     return data;
   },
 
+  createCoachCourseProgram: async (programData: Partial<CoachCourseProgram>): Promise<{ program: CoachCourseProgram }> => {
+    const { data } = await axios.post('/admin/setting/set/coach-course-program/set-access-level', programData);
+    return data;
+  },
+
+
   updateCoachCourseProgram: async (id: string, accessLevel: string): Promise<{ program: CoachCourseProgram }> => {
     const { data } = await axios.patch(`/admin/setting/set/coach-course-program/${id}/access-level`, { accessLevel });
     return data;

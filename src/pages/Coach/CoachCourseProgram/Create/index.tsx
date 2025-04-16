@@ -10,26 +10,42 @@ import {
   Grid2 as Grid,
   FormControlLabel,
   Switch,
+  Radio,
 } from '@mui/material';
 import StyledPaper from '../../../../components/StyledPaper';
+
+
+// API
+import { useCreateCoachCourseProgram } from '../../../../API/Coach/coach.hook';
 
 
 import Spinner from '../../../../components/Spinner'
 
 // import styles from './index.module.css'
 
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import toast from 'react-hot-toast';
 
 interface Props { }
+
+interface ExamOption {
+  text: string;
+  isCorrect: boolean;
+}
+
+interface ExamQuestion {
+  question_title: string;
+  options: ExamOption[];
+  points: number;
+}
 
 interface CourseSubject {
   title: string;
   description: string;
-  video_file: File | null;
+  video_file: string | null;
   order: number;
+  exam: ExamQuestion[];
 }
-
-
 
 // Validation schema
 const schema = yup.object({
@@ -59,9 +75,15 @@ type FormData = yup.InferType<typeof schema>;
 
 const CreateCoachCoursePage: React.FC<Props> = memo(() => {
 
+  const navigate = useNavigate();
+
   const [step, setStep] = useState(1);
   const [courseSubjects, setCourseSubjects] = useState<CourseSubject[]>([]);
+  const [finalFormState, setfinalFormState] = useState({});
 
+  const { mutate: createCoachCourseProgram, isLoading } = useCreateCoachCourseProgram();
+  
+  
   const {
     register,
     handleSubmit,
@@ -79,16 +101,23 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
   const isHavePenalty = watch('is_have_penalty');
 
   const onSubmit = (data: FormData) => {
-    // Initialize course subjects array based on course_subject_count
+    
+    const formData = Object.assign({}, data);
+    
+
+    if (!formData.penalty_fee || formData.penalty_fee?.length == 0 || !formData.is_have_penalty ) {
+      delete formData.penalty_fee
+    }
+    setfinalFormState(formData);
     const initialSubjects = Array(data.course_subject_count).fill(null).map((_, index) => ({
       title: '',
       description: '',
-      video_file: null,
+      video_file: "67620e2688dd804ab80f6c1a",
       order: index + 1,
+      exam: [], // Initialize empty exam array
     }));
     setCourseSubjects(initialSubjects);
-    console.log(data);
-    setStep(2); // Move to next step
+    setStep(2);
   };
 
   // Add handler for course subject changes
@@ -101,16 +130,80 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
     setCourseSubjects(updatedSubjects);
   };
 
+  // Add handler for adding new exam question
+  const handleAddExamQuestion = (subjectIndex: number) => {
+    const updatedSubjects = [...courseSubjects];
+    const newQuestion: ExamQuestion = {
+      question_title: '',
+      options: [
+        { text: '', isCorrect: false },
+        { text: '', isCorrect: false },
+        { text: '', isCorrect: false },
+        { text: '', isCorrect: false },
+      ],
+      points: 0,
+    };
+    
+    updatedSubjects[subjectIndex].exam = [
+      ...(updatedSubjects[subjectIndex].exam || []),
+      newQuestion,
+    ];
+    setCourseSubjects(updatedSubjects);
+  };
+
+  // Add handler for updating exam question
+  const handleExamChange = (
+    subjectIndex: number,
+    questionIndex: number,
+    field: keyof ExamQuestion,
+    value: any
+  ) => {
+    const updatedSubjects = [...courseSubjects];
+    const exam = updatedSubjects[subjectIndex].exam;
+    if (exam) {
+      exam[questionIndex] = {
+        ...exam[questionIndex],
+        [field]: value,
+      };
+      setCourseSubjects(updatedSubjects);
+    }
+  };
+
+  // Add handler for updating exam option
+  const handleOptionChange = (
+    subjectIndex: number,
+    questionIndex: number,
+    optionIndex: number,
+    field: keyof ExamOption,
+    value: any
+  ) => {
+    const updatedSubjects = [...courseSubjects];
+    const exam = updatedSubjects[subjectIndex].exam;
+    if (exam) {
+      exam[questionIndex].options[optionIndex] = {
+        ...exam[questionIndex].options[optionIndex],
+        [field]: value,
+      };
+      setCourseSubjects(updatedSubjects);
+    }
+  };
 
   // Add handler for final submission
   const handleFinalSubmit = () => {
-    const formData = getValues();
+    
     const finalData = {
-      ...formData,
-      course_subjects: courseSubjects,
+      ...finalFormState,
+      course_object: courseSubjects,
     };
     console.log('Final Data:', finalData);
-    // Here you can send the data to your API
+    // send the data to your API
+    createCoachCourseProgram(finalData, {
+      onSuccess: () => {
+        // Optionally redirect or show success message
+        navigate('/coach/coach-course-program');
+      },
+    });
+
   };
 
 
@@ -231,11 +324,11 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
               </Typography>
               <form onSubmit={(e) => { e.preventDefault(); handleFinalSubmit(); }}>
                 <Grid container spacing={3}>
-                  {courseSubjects.map((subject, index) => (
-                    <Grid size={12} key={index}>
+                  {courseSubjects.map((subject, subjectIndex) => (
+                    <Grid size={12} key={subjectIndex}>
                       <StyledPaper sx={{ p: 3 }}>
                         <Typography variant="subtitle1" gutterBottom>
-                          سرفصل {index + 1}
+                          سرفصل {subjectIndex + 1}
                         </Typography>
                         <Grid container spacing={2}>
                           <Grid size={12}>
@@ -243,7 +336,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                               fullWidth
                               label="عنوان"
                               value={subject.title}
-                              onChange={(e) => handleSubjectChange(index, 'title', e.target.value)}
+                              onChange={(e) => handleSubjectChange(subjectIndex, 'title', e.target.value)}
                             />
                           </Grid>
 
@@ -254,7 +347,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                               rows={4}
                               label="توضیحات"
                               value={subject.description}
-                              onChange={(e) => handleSubjectChange(index, 'description', e.target.value)}
+                              onChange={(e) => handleSubjectChange(subjectIndex, 'description', e.target.value)}
                             />
                           </Grid>
 
@@ -264,7 +357,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                               accept="video/*"
                               onChange={(e) => {
                                 const file = e.target.files?.[0] || null;
-                                handleSubjectChange(index, 'video_file', file);
+                                handleSubjectChange(subjectIndex, 'video_file', file);
                               }}
                             />
                           </Grid>
@@ -275,8 +368,65 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                               type="number"
                               label="ترتیب"
                               value={subject.order}
-                              onChange={(e) => handleSubjectChange(index, 'order', parseInt(e.target.value))}
+                              onChange={(e) => handleSubjectChange(subjectIndex, 'order', parseInt(e.target.value))}
                             />
+                          </Grid>
+
+                          {/* Exam Section */}
+                          <Grid size={12}>
+                            <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
+                              سوالات آزمون
+                            </Typography>
+                            {subject.exam?.map((question, questionIndex) => (
+                              <Box key={questionIndex} sx={{ mt: 2, p: 2, border: '1px solid #ddd', borderRadius: 1 }}>
+                                <Grid container spacing={2}>
+                                  <Grid size={12}>
+                                    <TextField
+                                      fullWidth
+                                      label="عنوان سوال"
+                                      value={question.question_title}
+                                      onChange={(e) => handleExamChange(subjectIndex, questionIndex, 'question_title', e.target.value)}
+                                    />
+                                  </Grid>
+                                  <Grid size={12}>
+                                    <TextField
+                                      fullWidth
+                                      type="number"
+                                      label="نمره"
+                                      value={question.points}
+                                      onChange={(e) => handleExamChange(subjectIndex, questionIndex, 'points', parseInt(e.target.value))}
+                                    />
+                                  </Grid>
+                                  {question.options.map((option, optionIndex) => (
+                                    <Grid size={12} key={optionIndex}>
+                                      <FormControlLabel
+                                        control={
+                                          <Radio
+                                            checked={option.isCorrect}
+                                            onChange={(e) => handleOptionChange(subjectIndex, questionIndex, optionIndex, 'isCorrect', e.target.checked)}
+                                          />
+                                        }
+                                        label={
+                                          <TextField
+                                            fullWidth
+                                            label={`گزینه ${optionIndex + 1}`}
+                                            value={option.text}
+                                            onChange={(e) => handleOptionChange(subjectIndex, questionIndex, optionIndex, 'text', e.target.value)}
+                                          />
+                                        }
+                                      />
+                                    </Grid>
+                                  ))}
+                                </Grid>
+                              </Box>
+                            ))}
+                            <Button
+                              variant="outlined"
+                              onClick={() => handleAddExamQuestion(subjectIndex)}
+                              sx={{ mt: 2 }}
+                            >
+                              افزودن سوال 
+                            </Button>
                           </Grid>
                         </Grid>
                       </StyledPaper>
