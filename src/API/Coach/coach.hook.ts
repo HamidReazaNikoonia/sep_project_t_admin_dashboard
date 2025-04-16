@@ -46,3 +46,19 @@ export const useUpdateCoachCourseProgram = () => {
   });
 };
 
+
+
+export const useDeleteCoachCourseProgram = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => coachAPI.deleteCoachCourseProgram(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['coach-course-programs'] });
+      showToast('موفق', 'برنامه با موفقیت حذف شد', 'success');
+    },
+    onError: () => {
+      showToast('خطا', 'خطا در حذف برنامه', 'error');
+    },
+  });
+};

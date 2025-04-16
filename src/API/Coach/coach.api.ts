@@ -21,4 +21,8 @@ export const coachAPI = {
     const { data } = await axios.patch(`/admin/setting/set/coach-course-program/${id}/access-level`, { accessLevel });
     return data;
   },
+
+  deleteCoachCourseProgram: async (id: string): Promise<void> => {
+    await axios.delete(`/admin/setting/set/coach-course-program/set-access-level/${id}`);
+  },
 };
