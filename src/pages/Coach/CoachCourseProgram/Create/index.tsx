@@ -1,5 +1,8 @@
 import React, { memo, Suspense, useState } from 'react'
 import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router'
+import toast from 'react-hot-toast';
+import axios from '@/API/axios';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
@@ -12,6 +15,8 @@ import {
   FormControlLabel,
   Switch,
   Radio,
+  LinearProgress,
+  Alert,
 } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -27,8 +32,7 @@ import { useCreateCoachCourseProgram } from '../../../../API/Coach/coach.hook';
 import Spinner from '../../../../components/Spinner'
 
 
-import { Link, useNavigate } from 'react-router'
-import toast from 'react-hot-toast';
+
 
 interface Props { }
 
@@ -89,6 +93,10 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
   const [step, setStep] = useState(1);
   const [courseSubjects, setCourseSubjects] = useState<CourseSubject[]>([]);
   const [finalFormState, setfinalFormState] = useState({});
+  // Add new state for tracking upload progress
+  const [uploadProgress, setUploadProgress] = useState<{ [key: number]: number }>({});
+  const [uploadedResponseState, setUploadedResponseState] = useState<{ [key: number]: any }>({});
+
 
   // Add state to store selected files for each subject
   const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File | null }>({});
@@ -124,7 +132,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
     const initialSubjects = Array(data.course_subject_count).fill(null).map((_, index) => ({
       title: '',
       description: '',
-      video_file: "67620e2688dd804ab80f6c1a",
+      video_file: "",
       order: index + 1,
       exam: [], // Initialize empty exam array
     }));
@@ -219,22 +227,22 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
   };
 
 
-  const uploadFile = async (file: File): Promise<UploadedFile> => {
-    const formData = new FormData();
-    formData.append('file', file);
+  // const uploadFile = async (file: File): Promise<UploadedFile> => {
+  //   const formData = new FormData();
+  //   formData.append('file', file);
 
-    const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
-      method: 'POST',
-      body: formData,
-    });
+  //   const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+  //     method: 'POST',
+  //     body: formData,
+  //   });
 
-    if (!response.ok) {
-      throw new Error('Upload failed');
-    }
+  //   if (!response.ok) {
+  //     throw new Error('Upload failed');
+  //   }
 
-    const data = await response.json();
-    return data.uploadedFile;
-  };
+  //   const data = await response.json();
+  //   return data.uploadedFile;
+  // };
 
   const handleFileSelect = (file: File | null, subjectIndex: number) => {
     setSelectedFiles(prev => ({
@@ -242,6 +250,28 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
       [subjectIndex]: file
     }));
   };
+
+  // const handleFileUpload = async (subjectIndex: number) => {
+  //   const file = selectedFiles[subjectIndex];
+  //   if (!file) {
+  //     toast.error('لطفا ابتدا فایل را انتخاب کنید');
+  //     return;
+  //   }
+
+  //   try {
+  //     const uploadedFile = await uploadFile(file);
+  //     handleSubjectChange(subjectIndex, 'video_file', uploadedFile._id);
+  //     toast.success('فایل با موفقیت آپلود شد');
+  //     // Clear the selected file after successful upload
+  //     setSelectedFiles(prev => ({
+  //       ...prev,
+  //       [subjectIndex]: null
+  //     }));
+  //   } catch (error) {
+  //     toast.error('خطا در آپلود فایل');
+  //     console.error('Upload error:', error);
+  //   }
+  // };
 
   const handleFileUpload = async (subjectIndex: number) => {
     const file = selectedFiles[subjectIndex];
@@ -251,17 +281,46 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
     }
 
     try {
-      const uploadedFile = await uploadFile(file);
+      setUploadProgress(prev => ({ ...prev, [subjectIndex]: 0 }));
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post(
+        'http://localhost:9000/v1/admin/setting/upload',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          onUploadProgress: (progressEvent: any) => {
+            const progress = Math.round(
+              (progressEvent.loaded * 100) / (progressEvent.total || 1)
+            );
+            setUploadProgress(prev => ({ ...prev, [subjectIndex]: progress }));
+          },
+        }
+      );
+
+      const uploadedFile = response.data.uploadedFile;
+      setUploadedResponseState(prev => ({
+        ...prev,
+        [subjectIndex]: response.data.uploadedFile
+      }))
       handleSubjectChange(subjectIndex, 'video_file', uploadedFile._id);
       toast.success('فایل با موفقیت آپلود شد');
-      // Clear the selected file after successful upload
+
+      // Clear states after successful upload
       setSelectedFiles(prev => ({
         ...prev,
         [subjectIndex]: null
       }));
+      setUploadProgress(prev => ({ ...prev, [subjectIndex]: 0 }));
+
     } catch (error) {
       toast.error('خطا در آپلود فایل');
       console.error('Upload error:', error);
+      setUploadProgress(prev => ({ ...prev, [subjectIndex]: 0 }));
     }
   };
 
@@ -428,28 +487,63 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                           </Grid> */}
 
 
-                          <Grid sx={{marginBottom: '50px', marginTop: '50px'}} size={{xs: 12, md:6}} container spacing={2} alignItems="center">
+                          <Grid sx={{ marginBottom: '50px', marginTop: '50px' }} size={{ xs: 12, md: 6 }} container spacing={2} alignItems="center">
                             <Grid size={12}>
-                            <Typography variant='h6' fontWeight={500}>
+                              <Typography variant='h6' fontWeight={500}>
                                 فایل دوره را آینجا آپلود کنید
                               </Typography>
                             </Grid>
 
-                            
-                            {selectedFiles[subjectIndex]?.name && (
-                              <div className='w-full border-2 px-8 py-2 rounded-4xl'>
-                              <div className='flex flex-col'>
-                                
-                                <div className='flex space-x-1 text-gray-600 mb-2'>
-                                <AttachFileIcon fontSize="small" color="inherit" />
-                                <div className='text-gray-600'>فایل انتخاب شده</div>
-                                </div>
 
-                                <div className='font-bold'> {selectedFiles[subjectIndex]?.name} </div>
-                              </div>
+                            {uploadedResponseState[subjectIndex]?._id && (
+                              <div className='w-full border-2 px-8 py-2 rounded-4xl'>
+                                <div className='flex flex-col'>
+                                  <Typography variant="body1" > فایل آپلود شده </Typography>
+                                  <a>{uploadedResponseState[subjectIndex]?._id}</a>
+                                </div>
                               </div>
                             )}
-                           
+
+                            {uploadedResponseState[subjectIndex]?._id && (
+                              <div>
+                                <Alert severity="success">
+                                  فایل با موفقیت آپلود شد
+                                </Alert>
+                              </div>
+                            )}
+
+
+                            {selectedFiles[subjectIndex]?.name && (
+                              <div className='w-full border-2 px-8 py-2 rounded-4xl'>
+                                <div className='flex flex-col'>
+                                  <div className='flex space-x-1 text-gray-600 mb-2'>
+                                    <AttachFileIcon fontSize="small" color="inherit" />
+                                    <div className='text-gray-600'>فایل انتخاب شده</div>
+                                  </div>
+
+                                  <div className='font-bold'> {selectedFiles[subjectIndex]?.name} </div>
+
+                                  {uploadProgress[subjectIndex] !== undefined && (
+                                    <div className='mt-2'>
+                                      <LinearProgress
+                                        variant="determinate"
+                                        value={uploadProgress[subjectIndex]}
+                                        sx={{ height: 8, borderRadius: 4 }}
+                                      />
+                                      <Typography
+                                        variant="body2"
+                                        color="textSecondary"
+                                        align="right"
+                                        sx={{ mt: 1 }}
+                                      >
+                                        {uploadProgress[subjectIndex]}% آپلود شده
+                                      </Typography>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+
 
                             <Grid size={{ xs: 12, md: 8 }}>
                               <input
@@ -466,7 +560,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                                 <Button
                                   variant="outlined"
                                   component="span"
-                                  startIcon={<CloudUploadIcon sx={{marginLeft: '10px'}} />}
+                                  startIcon={<CloudUploadIcon sx={{ marginLeft: '10px' }} />}
                                   fullWidth
                                 >
                                   {selectedFiles[subjectIndex] ? 'فایل انتخاب شده' : 'انتخاب فایل'}
