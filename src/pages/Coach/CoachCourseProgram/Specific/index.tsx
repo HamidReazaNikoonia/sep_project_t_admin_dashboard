@@ -14,6 +14,8 @@ import {
   Paper,
   CircularProgress,
   Divider,
+  Box,
+  Button,
 } from '@mui/material';
 
 // utils
@@ -197,12 +199,42 @@ const SpecificCoachCoursePage = () => {
                           {(index + 1).toLocaleString('fa-IR')}. {course.title}
                         </Typography>
                     </div>
-                    <div>
+                    <div className='border-b-2 pb-2 mb-6'>
                       <div className='text-blue-900 font-semibold mb-2' >
                         توضیحات
                       </div>
                       <div >{course.description}</div>
                     </div>
+
+                     {/* Show existing file if available */}
+               
+
+                {course.video_file?.file_name && (
+                  <div className='pb-2 mt-6'>
+
+                    
+
+                  <div className='text-blue-900 font-semibold mb-2' >
+                     نمایش فایل دوره
+                  </div>
+                  <Button
+                      variant="outlined"
+                      size="small"
+                      href={`http://localhost:9000/file/${course.video_file?.file_name}`}
+                      target="_blank"
+                    >
+                      مشاهده فایل
+                    </Button>
+
+                    <div className='flex my-3'>
+                    <Typography className='' variant="body2" color="green">
+                        نام فایل: {course.video_file?.file_name}
+                    </Typography>
+                    </div>
+                </div>
+                )}
+
+                    
                 </div>
               <TableContainer component={Paper} sx={{ mt: 2, borderRadius: "20px", border: '2px solid #1e1e62' }}>
                 <Table>
