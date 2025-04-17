@@ -6,12 +6,16 @@ import {
   Box,
   TextField,
   Button,
+  IconButton,
   Typography,
   Grid2 as Grid,
   FormControlLabel,
   Switch,
   Radio,
 } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+
 import StyledPaper from '../../../../components/StyledPaper';
 
 
@@ -19,9 +23,9 @@ import StyledPaper from '../../../../components/StyledPaper';
 import { useCreateCoachCourseProgram } from '../../../../API/Coach/coach.hook';
 
 
+
 import Spinner from '../../../../components/Spinner'
 
-// import styles from './index.module.css'
 
 import { Link, useNavigate } from 'react-router'
 import toast from 'react-hot-toast';
@@ -72,6 +76,11 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
+interface UploadedFile {
+  _id: string;
+  file_name: string;
+}
+
 
 const CreateCoachCoursePage: React.FC<Props> = memo(() => {
 
@@ -81,9 +90,12 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
   const [courseSubjects, setCourseSubjects] = useState<CourseSubject[]>([]);
   const [finalFormState, setfinalFormState] = useState({});
 
+  // Add state to store selected files for each subject
+  const [selectedFiles, setSelectedFiles] = useState<{ [key: number]: File | null }>({});
+
   const { mutate: createCoachCourseProgram, isLoading } = useCreateCoachCourseProgram();
-  
-  
+
+
   const {
     register,
     handleSubmit,
@@ -101,11 +113,11 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
   const isHavePenalty = watch('is_have_penalty');
 
   const onSubmit = (data: FormData) => {
-    
-    const formData = Object.assign({}, data);
-    
 
-    if (!formData.penalty_fee || formData.penalty_fee?.length == 0 || !formData.is_have_penalty ) {
+    const formData = Object.assign({}, data);
+
+
+    if (!formData.penalty_fee || formData.penalty_fee?.length == 0 || !formData.is_have_penalty) {
       delete formData.penalty_fee
     }
     setfinalFormState(formData);
@@ -143,7 +155,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
       ],
       points: 0,
     };
-    
+
     updatedSubjects[subjectIndex].exam = [
       ...(updatedSubjects[subjectIndex].exam || []),
       newQuestion,
@@ -190,7 +202,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
 
   // Add handler for final submission
   const handleFinalSubmit = () => {
-    
+
     const finalData = {
       ...finalFormState,
       course_object: courseSubjects,
@@ -206,6 +218,52 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
 
   };
 
+
+  const uploadFile = async (file: File): Promise<UploadedFile> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
+
+    const data = await response.json();
+    return data.uploadedFile;
+  };
+
+  const handleFileSelect = (file: File | null, subjectIndex: number) => {
+    setSelectedFiles(prev => ({
+      ...prev,
+      [subjectIndex]: file
+    }));
+  };
+
+  const handleFileUpload = async (subjectIndex: number) => {
+    const file = selectedFiles[subjectIndex];
+    if (!file) {
+      toast.error('لطفا ابتدا فایل را انتخاب کنید');
+      return;
+    }
+
+    try {
+      const uploadedFile = await uploadFile(file);
+      handleSubjectChange(subjectIndex, 'video_file', uploadedFile._id);
+      toast.success('فایل با موفقیت آپلود شد');
+      // Clear the selected file after successful upload
+      setSelectedFiles(prev => ({
+        ...prev,
+        [subjectIndex]: null
+      }));
+    } catch (error) {
+      toast.error('خطا در آپلود فایل');
+      console.error('Upload error:', error);
+    }
+  };
 
 
   return (
@@ -351,15 +409,81 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                             />
                           </Grid>
 
-                          <Grid size={12}>
-                            <input
+                          {/* <Grid size={12}>
+                            <div className='flex flex-col py-6'>
+                              <Typography variant='h6' fontWeight={800}>
+                                فایل دوره را آینجا آپلود کنید
+                              </Typography>
+                              <input
                               type="file"
+                              className={styles.input}
                               accept="video/*"
                               onChange={(e) => {
                                 const file = e.target.files?.[0] || null;
                                 handleSubjectChange(subjectIndex, 'video_file', file);
                               }}
                             />
+                            </div>
+                            
+                          </Grid> */}
+
+
+                          <Grid sx={{marginBottom: '50px', marginTop: '50px'}} size={{xs: 12, md:6}} container spacing={2} alignItems="center">
+                            <Grid size={12}>
+                            <Typography variant='h6' fontWeight={500}>
+                                فایل دوره را آینجا آپلود کنید
+                              </Typography>
+                            </Grid>
+
+                            
+                            {selectedFiles[subjectIndex]?.name && (
+                              <div className='w-full border-2 px-8 py-2 rounded-4xl'>
+                              <div className='flex flex-col'>
+                                
+                                <div className='flex space-x-1 text-gray-600 mb-2'>
+                                <AttachFileIcon fontSize="small" color="inherit" />
+                                <div className='text-gray-600'>فایل انتخاب شده</div>
+                                </div>
+
+                                <div className='font-bold'> {selectedFiles[subjectIndex]?.name} </div>
+                              </div>
+                              </div>
+                            )}
+                           
+
+                            <Grid size={{ xs: 12, md: 8 }}>
+                              <input
+                                type="file"
+                                accept="video/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0] || null;
+                                  handleFileSelect(file, subjectIndex);
+                                }}
+                                style={{ display: 'none' }}
+                                id={`video-upload-${subjectIndex}`}
+                              />
+                              <label htmlFor={`video-upload-${subjectIndex}`}>
+                                <Button
+                                  variant="outlined"
+                                  component="span"
+                                  startIcon={<CloudUploadIcon sx={{marginLeft: '10px'}} />}
+                                  fullWidth
+                                >
+                                  {selectedFiles[subjectIndex] ? 'فایل انتخاب شده' : 'انتخاب فایل'}
+                                </Button>
+                              </label>
+                            </Grid>
+                            <Grid size={{ xs: 12, md: 4 }}>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => handleFileUpload(subjectIndex)}
+                                disabled={!selectedFiles[subjectIndex]}
+                                fullWidth
+                              >
+                                آپلود فایل
+                              </Button>
+                            </Grid>
                           </Grid>
 
                           <Grid size={12}>
@@ -425,7 +549,7 @@ const CreateCoachCoursePage: React.FC<Props> = memo(() => {
                               onClick={() => handleAddExamQuestion(subjectIndex)}
                               sx={{ mt: 2 }}
                             >
-                              افزودن سوال 
+                              افزودن سوال
                             </Button>
                           </Grid>
                         </Grid>

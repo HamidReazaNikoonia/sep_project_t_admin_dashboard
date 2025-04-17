@@ -189,7 +189,7 @@ const SpecificCoachCoursePage = () => {
             سرفصل‌های دوره
           </Typography>
 
-          {program.course_object?.map((course, index) => (
+          {program.course_object?.map((course: any, index: any) => (
             <div className='mb-12' key={course._id}>
                 <div className='flex flex-col p-6 border-2 border-amber-950 rounded-xl'>
                 <div className='border-b-2 pb-2 mb-6'>
