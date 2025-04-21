@@ -1,7 +1,18 @@
 import  axios from '../axios';
-import { CoachCourseProgram, CoachCourseProgramResponse } from './types';
+import { CoachCourseProgram, CoachCourseProgramResponse, Coach } from './types';
+
+
+interface GetCoachesParams {
+  page?: number;
+  limit?: number;
+  q?: string;
+}
 
 export const coachAPI = {
+  getAllCoaches: async (params?: GetCoachesParams): Promise<Coach[]> => {
+    const response = await axios.get('/coach', { params });
+    return response.data;
+  },
   getCoachCoursePrograms: async (params?: {
     page?: number;
     limit?: number;

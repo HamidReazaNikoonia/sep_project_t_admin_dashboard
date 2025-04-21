@@ -2,6 +2,22 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { coachAPI } from './coach.api';
 import { showToast } from '../../utils/toast';
 
+// Query keys
+export const coachKeys = {
+  all: ['coaches'] as const,
+  lists: () => [...coachKeys.all, 'list'] as const,
+  list: (filters: Record<string, any>) => [...coachKeys.lists(), filters] as const,
+};
+
+
+// Hooks
+export const useGetAllCoaches = (params?: { page?: number; limit?: number; q?: string }) => {
+  return useQuery({
+    queryKey: coachKeys.list(params || {}),
+    queryFn: () => coachAPI.getAllCoaches(params),
+  });
+};
+
 export const useCoachCoursePrograms = (params?: {
   page?: number;
   limit?: number;
