@@ -13,6 +13,10 @@ export const coachAPI = {
     const response = await axios.get('/coach', { params });
     return response.data;
   },
+  getCoachById: async (id: string): Promise<Coach> => {
+    const response = await axios.get(`/coach/admin/${id}`);
+    return response.data;
+  },
   getCoachCoursePrograms: async (params?: {
     page?: number;
     limit?: number;

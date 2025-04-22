@@ -1,5 +1,6 @@
+// @ts-ignore
 import { useState, useCallback } from 'react';
-import { Box, Button, styled, Theme, Typography } from '@mui/material';
+import { Button, styled, Theme } from '@mui/material';
 import { Link } from 'react-router';
 import { debounce } from 'lodash';
 import {
@@ -192,7 +193,7 @@ const CoachList = () => {
             renderCell: (params) => (
                 <Button variant="outlined" color="secondary">
                     <Link
-                        to={`/coaches/${params.row.id}`}
+                        to={`/coach/${params.row.id}`}
                         style={{
                             color: 'inherit',
                             textDecoration: 'none',
@@ -224,7 +225,7 @@ const CoachList = () => {
         []
     );
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <div>در حال بارگذاری...</div>;
     if (isError) return <div>Error loading coaches</div>;
 
     return (

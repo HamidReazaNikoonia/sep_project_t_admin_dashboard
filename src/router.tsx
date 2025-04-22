@@ -23,6 +23,7 @@ import CoachPage from './pages/Coach'
 import CoachCourseProgramPage from './pages/Coach/CoachCourseProgram';
 import CreateCoachCoursePage from './pages/Coach/CoachCourseProgram/Create'
 import SpecificCoachCoursePage from './pages/Coach/CoachCourseProgram/Specific';
+import SpecificCoachPage from './pages/Coach/SpecificCoach'
 
 const router = createBrowserRouter([
   {
@@ -130,6 +131,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CoachPage />
+      </Layout>
+    )
+  },
+  {
+    path: '/coach/:id',
+    element: (
+      <Layout>
+        <SpecificCoachPage />
       </Layout>
     )
   },

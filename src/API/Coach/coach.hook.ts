@@ -4,7 +4,7 @@ import { showToast } from '../../utils/toast';
 
 // Query keys
 export const coachKeys = {
-  all: ['coaches'] as const,
+  all: ['coach'] as const,
   lists: () => [...coachKeys.all, 'list'] as const,
   list: (filters: Record<string, any>) => [...coachKeys.lists(), filters] as const,
 };
@@ -15,6 +15,14 @@ export const useGetAllCoaches = (params?: { page?: number; limit?: number; q?: s
   return useQuery({
     queryKey: coachKeys.list(params || {}),
     queryFn: () => coachAPI.getAllCoaches(params),
+  });
+};
+
+export const useGetCoachById = (id: string) => {
+  return useQuery({
+    queryKey: ['coach', id],
+    queryFn: () => coachAPI.getCoachById(id),
+    enabled: !!id,
   });
 };
 
