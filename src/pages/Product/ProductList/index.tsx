@@ -210,7 +210,7 @@ const ProductList = () => {
             width: 100,
             renderCell: (params) => (
                 <div>
-                      {params.value.name}
+                      {params.value?.name}
                 </div>
             ),
         },
