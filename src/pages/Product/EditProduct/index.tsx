@@ -52,6 +52,9 @@ type FormData = yup.InferType<typeof schema>;
 
 const EditProduct = () => {
   const { product_id } = useParams();
+  
+  
+  console.log(product_id);
   const navigate = useNavigate();
   const [images, setImages] = useState<File[]>([]);
   const [currentImages, setCurrentImages] = useState<Array<{ _id: string, file_name: string }>>([]);
@@ -63,8 +66,9 @@ const EditProduct = () => {
 
    // Update currentImages when product data loads
    useEffect(() => {
-    if (productData?.data?.products[0]?.images) {
-      setCurrentImages(productData.data.products[0].images);
+    console.log('productData', productData);
+    if (productData?.data?.results[0]?.images) {
+      setCurrentImages(productData.data.results[0].images);
     }
   }, [productData]);
 
@@ -81,8 +85,8 @@ const EditProduct = () => {
 
   // Set form default values when product data is loaded
   useEffect(() => {
-    if (productData?.data?.products[0]) {
-      const product = productData.data.products[0];
+    if (productData?.data?.results[0]) {
+      const product = productData.data.results[0];
       reset({
         title: product.title,
         subtitle: product.subtitle,
@@ -93,8 +97,8 @@ const EditProduct = () => {
         countInStock: product.countInStock,
         price: product.price,
         discountable: {
-          status: product.discountable.status,
-          percent: product.discountable.percent,
+          status: product.discountable ? product.discountable.status : false,
+          percent: product.discountable ?  product.discountable.percent : 0,
         },
       });
     }
@@ -129,10 +133,13 @@ const EditProduct = () => {
 
   const handleDeleteImage = (imageId: string) => {
     setCurrentImages(prev => prev.filter(img => img._id !== imageId));
+    console.log({imageId});
+
   };
 
   const onSubmit = async (data: FormData) => {
     try {
+      console.log({currentImages});
       const imageArr = currentImages.map(img => img._id);
       let imageIds = [...imageArr];
       
@@ -144,8 +151,9 @@ const EditProduct = () => {
       // @ts-expect-error
       await updateProduct.mutateAsync({
         ...data,
-        ...(imageIds.length > 0 && { images: imageIds }),
-        ...(imageIds.length > 0 && { thumbnail: imageIds[0] }),
+        // images: imageIds,
+        ...(imageIds.length > 0 ? { images: imageIds } : {images: ''}),
+        ...(imageIds.length > 0 ? { thumbnail: imageIds[0] } : {thumbnail: ''}),
       });
   
       showToast('موفق', 'محصول با موفقیت ویرایش شد', 'success');
@@ -359,7 +367,7 @@ const EditProduct = () => {
     <Grid size={12}>
       <StyledPaper sx={{ p: 3 }}>
         <Typography variant="h6" gutterBottom>تصاویر فعلی</Typography>
-        {currentImages.length > 0 ? (
+        {currentImages && currentImages.length > 0 ? (
           <Grid container spacing={2}>
             {currentImages.map((image, index) => (
               <Grid key={image._id} size={{ xs: 12, sm: 6, md: 4 }}>

@@ -55,12 +55,12 @@ const ProductSpecific = () => {
   }
 
   useEffect(() => {
-    if (data?.data?.products[0]) {
-      setChecked(data?.data?.products[0].status === 'publish')
+    if (data?.data?.results[0]) {
+      setChecked(data?.data?.results[0]?.status === 'publish')
     }
   }, [data])
 
-  const product = data?.data?.products[0]
+  const product = data?.data?.results[0]
 
   if (isLoading) {
     return (
@@ -167,7 +167,7 @@ const ProductSpecific = () => {
               </Typography>
               <Typography>{product.price.toLocaleString()} تومان</Typography>
             </Box>
-            {product.discountable.status && (
+            {product?.discountable?.status && (
               <Box mt={2}>
                 <Typography variant="subtitle2" color="textSecondary">
                   تخفیف

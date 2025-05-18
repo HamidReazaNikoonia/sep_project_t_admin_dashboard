@@ -160,8 +160,8 @@ const ProductList = () => {
       });
 
     // Extract the actual data and total count from the response
-  const products = data?.data?.products || [];
-  const totalCount = data?.data?.count || 0;
+  const products = data?.data?.results || [];
+  const totalCount = data?.data?.totalResults || 0;
 
   
 
@@ -174,7 +174,7 @@ const ProductList = () => {
             width: 200,
             renderCell: (params) => (
                 <Link
-                    to={`/products/${params.row._id}`}
+                    to={`/products/${params.row.id}`}
                     style={{
                         color: 'inherit',
                         textDecoration: 'none',
@@ -241,7 +241,7 @@ const ProductList = () => {
             renderCell: (params) => (
                 <Button variant="outlined" color="secondary" > 
                     <Link
-                    to={`/products/${params.row._id}`}
+                    to={`/products/${params.row.id}`}
                     style={{
                         color: 'primary.main',
                         textDecoration: 'none',
@@ -314,7 +314,7 @@ const ProductList = () => {
                 sortModel={sortModel}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
-                getRowId={(row) => row._id}
+                
                 slots={{ toolbar: GridToolbar }}
                 disableRowSelectionOnClick
                 slotProps={{
