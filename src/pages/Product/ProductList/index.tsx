@@ -287,7 +287,8 @@ const ProductList = () => {
     return (
         <Box sx={{ width: '100%', p: 3 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Link
+                <div className='flex gap-4'>
+                    <Link
                     to="/products/new"
                     style={{
                         textDecoration: 'none',
@@ -296,6 +297,17 @@ const ProductList = () => {
                 >
                     <Button variant="contained" color="primary" >  افزودن محصول جدید</Button>
                 </Link>
+
+                <Link
+                    to="/products-category"
+                    style={{
+                        textDecoration: 'none',
+                        color: 'inherit',
+                    }}
+                >
+                    <Button variant="contained" color="primary" >   افزودن  دسته بندی محصول </Button>
+                </Link>
+                </div>
                 <Typography variant="h4">لیست محصولات</Typography>
                 
             </Box>

@@ -8,10 +8,15 @@ import Notfound from './pages/Notfound'
 // Users
 import UserList from './pages/Users/UserList/index';
 import UserSpecific from './pages/Users/UserSpecific/index';
+
+// Product
 import ProductList from './pages/Product/ProductList/index'
 import ProductSpecific from './pages/Product/ProductSpecific'
 import NewProduct from './pages/Product/NewProduct'
 import EditProduct from './pages/Product/EditProduct'
+import CategoriesPage from './pages/Product/Category'
+
+
 import CourseList from './pages/Course/CourseList'
 import CourseSpecific from './pages/Course/CourseSpecific'
 import NewCourse from './pages/Course/NewCourse'
@@ -83,6 +88,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <EditProduct />
+      </Layout>
+    )
+  },
+  {
+    path: '/products-category',
+    element: (
+      <Layout>
+        <CategoriesPage />
       </Layout>
     )
   },

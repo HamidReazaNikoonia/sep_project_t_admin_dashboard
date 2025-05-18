@@ -35,7 +35,7 @@ const productsApi = {
   },
 
   createCategory: async (categoryData: CreateCategoryDto) => {
-    const { data } = await axios.post<Category>('product/categories', categoryData);
+    const { data } = await axios.post<Category>('admin/product/categories', categoryData);
     return data;
   },
 };

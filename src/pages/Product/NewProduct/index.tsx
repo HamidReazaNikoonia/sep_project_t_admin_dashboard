@@ -35,7 +35,8 @@ const schema = yup.object({
     status: yup.boolean().default(false),
     percent: yup.number().when('status', {
       is: true,
-      then: yup.number().required('درصد تخفیف الزامی است').min(0).max(100),
+      then: () => yup.number().required('درصد تخفیف الزامی است').min(0).max(100),
+      otherwise: () => yup.number().nullable(),
     }),
   }),
 });
