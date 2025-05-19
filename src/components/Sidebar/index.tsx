@@ -18,6 +18,7 @@ import {
   School,
   Settings,
   People,
+  Receipt,
   ChevronLeft
 } from '@mui/icons-material';
 import { Link, useLocation } from 'react-router'; // Import from react-router
@@ -30,7 +31,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
     { text: 'لیست کاربران', icon: <People />, path: '/users' },
     { text: 'لیست محصولات', icon: <ShoppingCart />, path: '/products' },
     { text: 'لیست دوره ها', icon: <School />, path: '/courses' },
-    { text: 'Settings', icon: <Settings />, path: '/settings' },
+    { text: 'لیست تراکنش ها', icon: <Receipt />, path: '/transactions' },
   ];
 
 

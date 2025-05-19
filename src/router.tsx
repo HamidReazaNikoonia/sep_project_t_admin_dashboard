@@ -31,6 +31,11 @@ import SpecificCoachCoursePage from './pages/Coach/CoachCourseProgram/Specific';
 import SpecificCoachPage from './pages/Coach/SpecificCoach'
 import CourseCategoriesPage from './pages/Course/Category'
 
+
+// Transaction
+import TransactionList from './pages/Transaction/TransactionList'
+import TransactionSpecific from './pages/Transaction/SpecificTransaction'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -145,6 +150,22 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <OrderList />
+      </Layout>
+    )
+  },
+   {
+    path: '/transactions',
+    element: (
+      <Layout>
+        <TransactionList />
+      </Layout>
+    )
+  },
+  {
+    path: '/transactions/:transaction_id',
+    element: (
+      <Layout>
+        <TransactionSpecific />
       </Layout>
     )
   },
