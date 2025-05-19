@@ -18,6 +18,7 @@ import {
   School,
   Settings,
   People,
+  Ballot,
   Receipt,
   ChevronLeft
 } from '@mui/icons-material';
@@ -31,6 +32,7 @@ const Sidebar = ({ mobileOpen, handleDrawerToggle }) => {
     { text: 'لیست کاربران', icon: <People />, path: '/users' },
     { text: 'لیست محصولات', icon: <ShoppingCart />, path: '/products' },
     { text: 'لیست دوره ها', icon: <School />, path: '/courses' },
+    { text: 'لیست سفارش ها', icon: <Ballot />, path: '/orders' },
     { text: 'لیست تراکنش ها', icon: <Receipt />, path: '/transactions' },
   ];
 

@@ -145,7 +145,7 @@ const OrderList = () => {
 
   return (
     <Box sx={{ width: '100%', p: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <Box display="flex" justifyContent="flex-end" alignItems="center" mb={3}>
         <Typography variant="h4">لیست سفارش‌ها</Typography>
       </Box>
 
