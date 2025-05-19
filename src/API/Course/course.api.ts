@@ -4,7 +4,7 @@ import { Course, CourseResponse, CourseCategory, CourseCategoryResponse } from '
 const courseApi = {
   // Get all courses
   getCourses: async (params?: { page?: number; limit?: number; q?: string }) => {
-    const { data } = await axios.get<CourseResponse>('course', { params });
+    const { data } = await axios.get<CourseResponse>('course/admin', { params });
     return data;
   },
 

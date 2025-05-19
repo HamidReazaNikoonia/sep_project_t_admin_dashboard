@@ -156,8 +156,8 @@ const CourseList = () => {
           }),
     });
 
-    const courses = data?.data?.courses || [];
-    const totalCount = data?.count || 0;
+    const courses = data?.data?.results || [];
+    const totalCount = data?.data?.totalResults || 0;
 
     const columns: GridColDef[] = [
         {
@@ -166,7 +166,7 @@ const CourseList = () => {
             width: 200,
             renderCell: (params) => (
                 <Link
-                    to={`/courses/${params.row._id}`}
+                    to={`/courses/${params.row.id}`}
                     style={{
                         color: 'inherit',
                         textDecoration: 'none',
@@ -256,7 +256,7 @@ const CourseList = () => {
             renderCell: (params) => (
                 <Button variant="outlined" color="secondary">
                     <Link
-                        to={`/courses/${params.row._id}`}
+                        to={`/courses/${params.row.id}`}
                         style={{
                             color: 'primary.main',
                             textDecoration: 'none',
@@ -325,7 +325,7 @@ const CourseList = () => {
                 sortModel={sortModel}
                 onFilterModelChange={handleFilterModelChange}
                 onSortModelChange={handleSortModelChange}
-                getRowId={(row) => row._id}
+                getRowId={(row) => row.id}
                 slots={{ toolbar: GridToolbar }}
                 disableRowSelectionOnClick
                 slotProps={{

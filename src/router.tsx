@@ -29,6 +29,7 @@ import CoachCourseProgramPage from './pages/Coach/CoachCourseProgram';
 import CreateCoachCoursePage from './pages/Coach/CoachCourseProgram/Create'
 import SpecificCoachCoursePage from './pages/Coach/CoachCourseProgram/Specific';
 import SpecificCoachPage from './pages/Coach/SpecificCoach'
+import CourseCategoriesPage from './pages/Course/Category'
 
 const router = createBrowserRouter([
   {
@@ -96,6 +97,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <CategoriesPage />
+      </Layout>
+    )
+  },
+   {
+    path: '/course-category',
+    element: (
+      <Layout>
+        <CourseCategoriesPage />
       </Layout>
     )
   },
