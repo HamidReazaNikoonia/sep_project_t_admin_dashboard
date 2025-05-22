@@ -15,6 +15,10 @@ import { showToast } from '../../../utils/toast';
 import FolderIcon from '@mui/icons-material/Folder';
 const label = { inputProps: { 'aria-label': 'Switch Course Status' } };
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
+
+
 const CourseSpecific = () => {
   const [checked, setChecked] = useState(false);
   const { course_id } = useParams();
@@ -44,7 +48,7 @@ const CourseSpecific = () => {
   }, [data]);
 
   const handleFileDownload = (fileName: string) => {
-    const fileUrl = `http://localhost:9000/file/${fileName}`;
+    const fileUrl = `${SERVER_FILE}/${fileName}`;
     window.open(fileUrl, '_blank');
   };
 
@@ -306,7 +310,7 @@ const CourseSpecific = () => {
             </Typography>
             <Box
               component="img"
-              src={`http://localhost:9000/file/${course.tumbnail_image?.file_name || ''}`}
+              src={`${SERVER_FILE}/${course.tumbnail_image?.file_name || ''}`}
               alt="Course thumbnail"
               sx={{
                 width: '100%',

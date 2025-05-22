@@ -17,6 +17,9 @@ import {
 import StyledPaper from '../../../components/StyledPaper'
 import { showToast } from '../../../utils/toast'
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
+
 const label = { inputProps: { 'aria-label': 'SwitchProduct Status' } }
 
 const ProductSpecific = () => {
@@ -245,7 +248,7 @@ const ProductSpecific = () => {
                 <Grid item key={imageId} size={{ xs: 12, md: 4 }}>
                   <Box
                     component="img"
-                    src={`http://localhost:9000/file/${imageId.file_name || ''}`} // Adjust the image URL according to your API
+                    src={`${SERVER_FILE}/${imageId.file_name || ''}`} // Adjust the image URL according to your API
                     alt={`Product image ${index + 1}`}
                     sx={{
                       width: '100%',

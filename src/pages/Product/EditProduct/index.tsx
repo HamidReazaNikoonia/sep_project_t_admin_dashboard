@@ -25,6 +25,10 @@ import StyledPaper from '../../../components/StyledPaper';
 import { showToast } from '../../../utils/toast';
 import ImageUploader from 'react-images-upload';
 
+
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
+
 // Same validation schema as NewProduct
 const schema = yup.object({
     title: yup.string().required('عنوان الزامی است'),
@@ -111,7 +115,7 @@ const EditProduct = () => {
     formData.append('file', file);
     
     try {
-      const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+      const response = await fetch(`${SERVER_URL}/admin/setting/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -381,7 +385,7 @@ const EditProduct = () => {
                 >
                   <Box
                     component="img"
-                    src={`http://localhost:9000/file/${image.file_name}`}
+                    src={`${SERVER_FILE}/${image.file_name}`}
                     alt={`Product image ${index + 1}`}
                     sx={{
                       width: '100%',

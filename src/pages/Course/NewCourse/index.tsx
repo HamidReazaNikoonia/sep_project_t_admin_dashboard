@@ -23,6 +23,9 @@ import StyledPaper from '../../../components/StyledPaper';
 import { showToast } from '../../../utils/toast';
 import ImageUploader from 'react-images-upload';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
+
 // Validation schema
 const schema = yup.object({
   title: yup.string().required('عنوان دوره الزامی است'),
@@ -122,7 +125,7 @@ const NewCourse = () => {
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+    const response = await fetch(`${SERVER_URL}/admin/setting/upload`, {
       method: 'POST',
       body: formData,
     });

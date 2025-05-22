@@ -9,7 +9,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  plugins: [react(), EnvironmentPlugin(['REACT_APP_TEXT'])],
+  plugins: [react(), EnvironmentPlugin(['REACT_APP_TEXT', 'REACT_APP_SERVER_URL', 'REACT_APP_SERVER_FILE'])],
   publicDir: 'public',
   server: {
     host: true,

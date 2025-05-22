@@ -20,6 +20,8 @@ import { useUpdateCourse, useCourse, useCourseCategories } from '../../../API/Co
 import StyledPaper from '../../../components/StyledPaper';
 import { showToast } from '../../../utils/toast';
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
 
 // Validation schema
 const schema = yup.object({
@@ -225,7 +227,7 @@ const EditCourse = () => {
       const formData = new FormData();
       formData.append('file', fileState.file);
       
-      const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+      const response = await fetch(`${SERVER_URL}/admin/setting/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -449,7 +451,7 @@ const EditCourse = () => {
                     <Button
                       variant="outlined"
                       size="small"
-                      href={`http://localhost:9000/file/${field.file.file_name}`}
+                      href={`${SERVER_FILE}/${field.file.file_name}`}
                       target="_blank"
                     >
                       مشاهده فایل
@@ -578,7 +580,7 @@ const EditCourse = () => {
                 <Button
                   variant="outlined"
                   size="small"
-                  href={`http://localhost:9000/file/${field.files.file_name}`}
+                  href={`${SERVER_FILE}/${field.files.file_name}`}
                   target="_blank"
                 >
                   مشاهده فایل

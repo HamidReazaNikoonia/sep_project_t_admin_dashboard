@@ -18,6 +18,9 @@ import StyledPaper from '../../../components/StyledPaper';
 import { showToast } from '../../../utils/toast';
 import ImageUploader from 'react-images-upload'; // You might want to use a different image uploader
 
+const SERVER_URL = process.env.REACT_APP_SERVER_URL;
+const SERVER_FILE = process.env.REACT_APP_SERVER_FILE;
+
 // Validation schema
 const schema = yup.object({
   title: yup.string().required('عنوان الزامی است'),
@@ -67,7 +70,7 @@ const NewProduct = () => {
     formData.append('file', file);
     
     try {
-      const response = await fetch('http://localhost:9000/v1/admin/setting/upload', {
+      const response = await fetch(`${SERVER_URL}/admin/setting/upload`, {
         method: 'POST',
         body: formData,
       });
