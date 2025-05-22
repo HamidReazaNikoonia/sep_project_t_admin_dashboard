@@ -1,4 +1,6 @@
-import React, { memo, Suspense } from 'react'
+import React, { memo, Suspense, useEffect } from 'react'
+import { useNavigate } from 'react-router';
+
 
 import Box from '../../components/Box'
 import Spinner from '../../components/Spinner'
@@ -12,6 +14,21 @@ import styles from './index.module.css'
 interface Props {}
 
 const Index: React.FC<Props> = memo(() => {
+
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const token = localStorage.getItem('__token__');
+
+    if (!token) {
+      navigate("/login");
+    }
+  
+  }, [navigate])
+  
+
+
   return (
     <>
       <Box>

@@ -44,6 +44,7 @@ const LoginForm = () => {
             if (data?.user) {
               setUserId(data?.user?.id);
               setOtpInputVisibility(true);
+              alert(data?.user?.otp);
             }
           }
 

@@ -13,7 +13,7 @@ export default defineConfig({
   publicDir: 'public',
   server: {
     host: true,
-    port: 3000,
+    port: 3001,
   },
   resolve: {
     alias: {
