@@ -148,8 +148,8 @@ importers:
         specifier: ^10.0.2
         version: 10.1.5(eslint@9.28.0(jiti@2.4.2))
       eslint-config-ts-prefixer:
-        specifier: ^2.0.0
-        version: 2.0.0(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.28.0(jiti@2.4.2)))(eslint@9.28.0(jiti@2.4.2))(prettier@3.5.3)(typescript@5.8.3)
+        specifier: ^2.0.1
+        version: 2.0.1(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.28.0(jiti@2.4.2)))(eslint@9.28.0(jiti@2.4.2))(prettier@3.5.3)(typescript@5.8.3)
       eslint-import-resolver-typescript:
         specifier: ^4.4.2
         version: 4.4.2(eslint-plugin-import@2.31.0)(eslint@9.28.0(jiti@2.4.2))
@@ -2149,8 +2149,8 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
-  eslint-config-ts-prefixer@2.0.0:
-    resolution: {integrity: sha512-h3nhG57rMZmoLL70BNmPeSuV9XO7DX4YGeTpjNjO9AUU8KPJVkC6HgfGAHJTM7SFSP/c4JCvCRrTj+pnMoER5Q==}
+  eslint-config-ts-prefixer@2.0.1:
+    resolution: {integrity: sha512-dSwJ4bVP28nNpk25rp7pESjghSh0xHxtQXwX1JWiHc1OmDqdC9/Yg/Lf531KeVhRepneiHo3QrW643q5e38opw==}
     peerDependencies:
       eslint: ^9.0.0
       typescript: ^5.0.2
@@ -5930,7 +5930,7 @@ snapshots:
     dependencies:
       eslint: 9.28.0(jiti@2.4.2)
 
-  eslint-config-ts-prefixer@2.0.0(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.28.0(jiti@2.4.2)))(eslint@9.28.0(jiti@2.4.2))(prettier@3.5.3)(typescript@5.8.3):
+  eslint-config-ts-prefixer@2.0.1(@types/eslint@9.6.1)(eslint-config-prettier@10.1.5(eslint@9.28.0(jiti@2.4.2)))(eslint@9.28.0(jiti@2.4.2))(prettier@3.5.3)(typescript@5.8.3):
     dependencies:
       '@typescript-eslint/eslint-plugin': 8.33.1(@typescript-eslint/parser@8.33.1(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
       '@typescript-eslint/parser': 8.33.1(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
