@@ -47,7 +47,7 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.4.0",
+    "@eslint/compat": "^1.4.1",
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.38.0",
     "@tailwindcss/aspect-ratio": "^0.4.2",
