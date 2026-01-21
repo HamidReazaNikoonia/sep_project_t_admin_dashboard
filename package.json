@@ -35,7 +35,7 @@
     "@tanstack/react-query": "^5.90.19",
     "axios": "^1.13.2",
     "clsx": "^2.1.1",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "lodash.debounce": "^4.0.8",
     "moment-jalaali": "^0.10.4",
     "react": "^19.2.3",
