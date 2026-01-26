@@ -38,7 +38,7 @@
     "lodash": "^4.17.23",
     "lodash.debounce": "^4.0.8",
     "moment-jalaali": "^0.10.4",
-    "react": "^19.2.3",
+    "react": "^19.2.4",
     "react-dom": "^19.2.3",
     "react-hook-form": "^7.71.1",
     "react-hot-toast": "^2.6.0",
